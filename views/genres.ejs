@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genres</title>
+</head>
+<body>
+    <%- include('navbar', {links: links}) %>
+    <h1>Genres List</h1>
+    <ul>
+        <% genres.forEach(genre => { %>
+            <li><%= genre.name %>
+                <a href="/categories/<%= genre.id %>">View</a>
+            </li>
+        <% }) %>
+    </ul>
+</body>
+</html>
