@@ -75,3 +75,9 @@ exports.updateMoviePost = [
         res.redirect(`/movies/${req.params.id}`);
     }
 ];
+
+exports.deleteMovie = (req, res) => {
+    const index = movies.findIndex(movie => movie.id == req.params.id);
+    movies.splice(index , 1);
+    res.redirect("/movies");
+};

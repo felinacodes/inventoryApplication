@@ -88,4 +88,10 @@ exports.updateCategoryPost = [
        res.redirect(`/categories/${req.params.id}`);
     }
     ];
+
+exports.deleteCategory = (req, res) => {
+    const genreIndex = genres.findIndex(genre => genre.id == req.params.id);
+    genres.splice(genreIndex, 1);
+    res.redirect("/categories");
+}
     

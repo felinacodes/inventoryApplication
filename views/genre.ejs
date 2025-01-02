@@ -9,6 +9,9 @@
     <%- include('navbar', {links: links}) %>
     <h1> <%= genre.name %></h1>
     <a href="/categories/<%= genre.id %>/update">Update</a>
+    <form action="/categories/<%= genre.id %>/delete" method="POST">
+        <button type="submit">Delete</button>
+    </form>
     <h2>List of movies with this genre below: </h2>
 </body>
 </html>
