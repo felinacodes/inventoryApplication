@@ -8,6 +8,11 @@
 <body>
     <%- include('navbar', {links: links}) %>
     <h1>Genres List</h1>
+    <%- include('errors') %>
+    <form action="/categories" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
+        <button type="submit">Add Genre</button>
     <ul>
         <% genres.forEach(genre => { %>
             <li><%= genre.name %>

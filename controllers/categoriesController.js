@@ -1,4 +1,14 @@
-const e = require("express");
+const express = require("express");
+const { body, validationResult } = require("express-validator");
+
+const alphaErr = "Must only contain letters.";
+const lengthErr = "Must be between 1 and 20 characters.";
+
+const validateCategory = [
+    body("name").trim().escape()
+        .isAlpha().withMessage(alphaErr)
+        .isLength({ min: 1, max: 20 }).withMessage(lengthErr)
+]
 
 const genres = [
     {
@@ -25,3 +35,32 @@ exports.getCategoryById = (req, res) => {
     res.render("genre", { genre: genres.find(genre => genre.id == req.params.id) });
     // res.send(`Category with id ${req.params.id}`);
 }
+
+// exports.createCategory = (req, res) => { 
+//     const genre = {
+//         id: genres.length + 1,
+//         name: req.body.name
+//     };
+//     genres.push(genre);
+//     res.redirect("/categories");
+// }
+
+exports.createCategory = [
+    validateCategory,
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).render("genres",
+                {
+                    genres: genres,
+                    errors: errors.array()
+                });
+        }
+        const genre = {
+            id: genres.length + 1,
+            name: req.body.name
+        };
+        genres.push(genre);
+        res.redirect("/categories");
+    }
+]
