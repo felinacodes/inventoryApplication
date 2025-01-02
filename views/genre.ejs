@@ -7,8 +7,8 @@
 </head>
 <body>
     <%- include('navbar', {links: links}) %>
-   <% console.log(genre); %>
     <h1> <%= genre.name %></h1>
+    <a href="/categories/<%= genre.id %>/update">Update</a>
     <h2>List of movies with this genre below: </h2>
 </body>
 </html>

@@ -17,7 +17,9 @@ const movies = [
 
 const validateMovie = [
     body("title").trim().escape()
-        .isLength({ min: 1, max: 50 }).withMessage(lengthErr)
+        .isLength({ min: 1, max: 50 }).withMessage(lengthErr),
+    body("year")
+        .isInt({ min: 1895, max: 2500 }).withMessage("Year must be between 1895 and 2500.")
 ]
 
 
@@ -29,16 +31,6 @@ exports.getMovieById = (req, res) => {
     res.render("movie", { movie: movies.find(movie => movie.id == req.params.id) });
     // res.send(`Movie with id ${req.params.id}`);
 };
-
-// exports.createMovie = (req, res) => {
-//     const movie = {
-//         id: movies.length + 1,
-//         title: req.body.title,
-//         year: req.body.year
-//     };
-//     movies.push(movie);
-//     res.redirect("/movies");
-// };
 
 exports.createMovie = [
     validateMovie,
@@ -61,3 +53,25 @@ exports.createMovie = [
     }
 ];
 
+exports.updateMovieGet = (req, res) => {
+    const movie = movies.find(movie => movie.id == req.params.id);
+    res.render("updateMovie", { movie: movie });
+};
+
+exports.updateMoviePost = [
+    validateMovie,
+    (req,res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).render("updateMovie",
+                {
+                    movie: { id: req.params.id, title: req.body.title, year: req.body.year },
+                    errors: errors.array()
+                });
+        }
+        const movie = movies.find(movie => movie.id == req.params.id);
+        movie.title = req.body.title;
+        movie.year = req.body.year;
+        res.redirect(`/movies/${req.params.id}`);
+    }
+];

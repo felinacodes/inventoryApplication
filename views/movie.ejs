@@ -9,5 +9,6 @@
     <%- include('navbar', {links: links}) %>
     <h1> <%= movie.title %></h1>
     <h5> <%= movie.year %></h5>
+    <a href="/movies/<%= movie.id %>/update">Update</a>
 </body>
 </html>
