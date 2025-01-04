@@ -29,9 +29,27 @@ app.use("/categories", categoriesRouter);
 app.use("/movies", moviesRouter);
 app.use("/", indexRouter);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.APP_PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
+
+//TODO 
+/*
+1. populate queries
+2. fix controller to work with the db.
+3. update views/controllers to handle new fields.
+4. fix delete functionality.
+5. handle errors everywhere.
+6. secure update/delete.
+7. add search functionality.
+13. add pagination.
+14. add sorting.
+15. add filtering.
+16. style.
+17. add documentation.
+18. deploy.
+
+*/
 
