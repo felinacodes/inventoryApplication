@@ -19,9 +19,11 @@
             <option value="Male" <%= actor.gender === 'Male' ? 'selected' : '' %>>Male</option>
             <option value="Female" <%= actor.gender === 'Female' ? 'selected' : '' %>>Female</option>
         </select>
+        <label for="birth_date"> Birth Date: </label>
+        <input type="date" id="birth_date" name="birth_date" value="<%= actor.birth_date ? actor.birth_date.toISOString().split('T')[0] : '' %>">
         <label for="photo">Photo:</label>
         <img id="photoPreview"
-        src="<%= actor.photo_url ? actor.photo_url : NULL %>" 
+        src="<%= actor.photo_url ? actor.photo_url : '/public/images/default.jpg' %>" 
         alt="Actor's Photo" 
         width="100"
         height="100"
@@ -48,7 +50,5 @@
             }
         });
     </script>
-
-    
 </body>
 </html>

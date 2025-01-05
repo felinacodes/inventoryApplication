@@ -32,12 +32,12 @@ async function getActorById(id) {
     return rows[0]; 
 }
 
-async function addActor(f_name, l_name, gender, photo_url) {
-    await pool.query('INSERT INTO actors (first_name, last_name, gender, photo_url) VALUES ($1, $2, $3, $4)', [f_name, l_name, gender, photo_url]);
+async function addActor(f_name, l_name, gender, birth_date, photo_url) {
+    await pool.query('INSERT INTO actors (first_name, last_name, gender, birth_date, photo_url) VALUES ($1, $2, $3, $4, $5)', [f_name, l_name, gender, birth_date, photo_url]);
 }
 
-async function updateActor(id, f_name, l_name, gender, photo_url) {
-    await pool.query('UPDATE actors SET first_name = $1, last_name = $2, gender = $3, photo_url = $4 WHERE id = $5',[f_name, l_name, gender, photo_url, id]);
+async function updateActor(id, f_name, l_name, gender, birth_date, photo_url) {
+    await pool.query('UPDATE actors SET first_name = $1, last_name = $2, gender = $3, birth_date = $4, photo_url = $5 WHERE id = $6',[f_name, l_name, gender, birth_date, photo_url, id]);
 }
 
 async function deleteActor(id) {

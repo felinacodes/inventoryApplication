@@ -19,6 +19,8 @@
             <option value="Male">Male</option>
             <option value="Female">Female</option>
         </select>
+        <label for="birth_date"> Birth Date: </label>
+        <input type="date" id="birth_date" name="birth_date">
         <label for="photo">Photo:</label>
         <input type="file" id="photo" name="photo">
         <button type="submit">Add Actor</button>
@@ -26,7 +28,7 @@
         <% actors.forEach(actor => { %>
             <li><%= actor.first_name %> <%= actor.last_name %>
                 <%= actor.gender %>
-                <img src="<%= actor.photo_url %>" alt="actor photo" style="width: 100px; height: 100px;">
+                <img src="<%= actor.photo_url ? actor.photo_url : '/public/images/default.jpg' %>" alt="actor photo" style="width: 100px; height: 100px;">
                 <a href="/actors/<%= actor.id %>">View</a>
             </li>
         <% }) %>

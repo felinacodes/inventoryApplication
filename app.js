@@ -7,6 +7,7 @@ const searchRouter = require("./routes/searchRouter");
 const actorsRouter = require("./routes/actorsRouter");
 const path = require("path");
 
+
 const links = [
     { text: "home", href: "/" },
     { text: "categories", href: "/categories" },
@@ -21,6 +22,8 @@ app.set("view engine", "ejs");
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+
 
 app.use((req, res, next) => {
     res.locals.links = links;

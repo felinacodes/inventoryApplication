@@ -3,7 +3,6 @@ const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
 const fs = require("fs");
 const path = require("path");
-const uploadMiddleware = require("../routes/multer");
 
 
 const alphaErr = "Must only contain letters.";
@@ -25,7 +24,18 @@ const validateActor = [
         .isLength({ min: 1, max: 20 }).withMessage(lengthErr),
     body("l_name").trim().escape()
         .isAlpha().withMessage(alphaErr)
-        .isLength({ min: 1, max: 20 }).withMessage(lengthErr)
+        .isLength({ min: 1, max: 20 }).withMessage(lengthErr),
+        body("birth_date").optional({ checkFalsy: true }).isDate().withMessage("Invalid date format")
+        .custom((value) => {
+            const currentDate = new Date().toISOString().split('T')[0];
+            if (value > currentDate) {
+                throw new Error("Birth date cannot be in the future");
+            }
+            if (value < "1900-01-01") { 
+                throw new Error("Birth date must be after 1900-01-01");
+            }
+            return true;
+        })
 ]
 
 exports.getAllActors = async(req, res) => {
@@ -52,7 +62,14 @@ exports.createActor = [
                 });
         }
         const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
-        await db.addActor(req.body.f_name, req.body.l_name, req.body.gender, photoUrl);
+        const { f_name, l_name, gender, birth_date } = req.body;
+        await db.addActor(
+            f_name || null,
+            l_name || null,
+            gender || null,
+            birth_date || null,
+            photoUrl
+        );
         res.redirect("/actors");
     }
 ]
@@ -65,7 +82,6 @@ exports.updateActorGet = async(req, res) => {
 
 exports.updateActorPost = [
     validateActor,
-    uploadMiddleware, // Apply multer middleware here
     async(req, res) => {
         const actor = await db.getActorById(req.params.id);
         const errors = validationResult(req);
@@ -76,14 +92,16 @@ exports.updateActorPost = [
             });
         }
         let photoUrl = actor.photo_url;
+        // const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
         if (req.file) {
             // Delete the old photo if a new one is uploaded
             if (actor.photo_url) {
                 deleteFile(actor.photo_url);
             }
-            photoUrl = `/public/uploads/${req.file.filename}`;
+           photoUrl = `/public/uploads/${req.file.filename}`;
         }
-        await db.updateActor(req.params.id, req.body.f_name, req.body.l_name, req.body.gender, photoUrl);
+        const { f_name, l_name, gender, birth_date} = req.body;
+        await db.updateActor(req.params.id, f_name, l_name, gender, birth_date ? birth_date : null, photoUrl);
         res.redirect(`/actors/${req.params.id}`);
     }
 ];
