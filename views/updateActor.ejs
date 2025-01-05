@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Actor</title>
+</head>
+<body>
+    <%- include('navbar', {links: links}) %>
+    <h1>Update Actor</h1>
+    <%- include('errors') %>
+    <form action="/actors/<%= actor.id %>/update" method="POST" enctype="multipart/form-data">
+        <label for="f_name">First Name:</label>
+        <input type="text" id="f_name" name="f_name" value="<%= actor.first_name %>">
+        <label for="l_name">Last Name:</label>
+        <input type="text" id="l_name" name="l_name" value="<%= actor.last_name %>">
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender">
+            <option value="Male" <%= actor.gender === 'Male' ? 'selected' : '' %>>Male</option>
+            <option value="Female" <%= actor.gender === 'Female' ? 'selected' : '' %>>Female</option>
+        </select>
+        <label for="photo">Photo:</label>
+        <img id="photoPreview"
+        src="<%= actor.photo_url ? actor.photo_url : NULL %>" 
+        alt="Actor's Photo" 
+        width="100"
+        height="100"
+        />
+        <input type="file" id="photo" name="photo">
+        <button type="submit">Update Actor</button>
+    </form>
+
+    <script>
+        const photoInput = document.getElementById('photo');
+        const photoPreview = document.getElementById('photoPreview');
+
+        photoInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photoPreview.src = e.target.result; // Set the preview image source
+                };
+                reader.readAsDataURL(file); // Read the file as a data URL
+            } else {
+                // If no file is selected, revert to the default or existing photo
+                photoPreview.src = '<%= actor.photo_url || "/images/default-photo.jpg" %>';
+            }
+        });
+    </script>
+
+    
+</body>
+</html>

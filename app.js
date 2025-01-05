@@ -4,6 +4,7 @@ const indexRouter = require("./routes/indexRouter");
 const categoriesRouter = require("./routes/categoriesRouter");
 const moviesRouter = require("./routes/moviesRouter");
 const searchRouter = require("./routes/searchRouter");
+const actorsRouter = require("./routes/actorsRouter");
 const path = require("path");
 
 const links = [
@@ -11,11 +12,13 @@ const links = [
     { text: "categories", href: "/categories" },
     { text: "movies", href: "/movies" },
     { text: "search", href: "/search" },
+    { text: "actors", href: "/actors" },
 ];
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.use(express.static(path.join(__dirname, "public")));
+// app.use(express.static(path.join(__dirname, "public")));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -27,6 +30,7 @@ app.use((req, res, next) => {
 app.use("/search", searchRouter);
 app.use("/categories", categoriesRouter);
 app.use("/movies", moviesRouter);
+app.use("/actors", actorsRouter);
 app.use("/", indexRouter);
 
 const PORT = process.env.APP_PORT || 3000;
@@ -37,6 +41,10 @@ app.listen(PORT, () => {
 
 //TODO 
 /*
+
+make directors. 
+make movies.
+
 1. populate queries
 2. fix controller to work with the db.
 3. update views/controllers to handle new fields.
@@ -50,6 +58,8 @@ app.listen(PORT, () => {
 16. style.
 17. add documentation.
 18. deploy.
+
+
 
 */
 

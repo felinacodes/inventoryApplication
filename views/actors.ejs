@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actors</title>
+</head>
+<body>
+    <%- include('navbar', {links: links}) %>
+    <h1>Actors List</h1>
+    <%- include('errors') %>
+    <form action="/actors" method="POST" enctype="multipart/form-data">
+        <label for="f_name">First Name:</label>
+        <input type="text" id="f_name" name="f_name">
+        <label for="l_name">Last Name:</label>
+        <input type="text" id="l_name" name="l_name">
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+        <label for="photo">Photo:</label>
+        <input type="file" id="photo" name="photo">
+        <button type="submit">Add Actor</button>
+    <ul>
+        <% actors.forEach(actor => { %>
+            <li><%= actor.first_name %> <%= actor.last_name %>
+                <%= actor.gender %>
+                <img src="<%= actor.photo_url %>" alt="actor photo" style="width: 100px; height: 100px;">
+                <a href="/actors/<%= actor.id %>">View</a>
+            </li>
+        <% }) %>
+    </ul>
+</body>
+</html>

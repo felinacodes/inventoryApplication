@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actor</title>
+</head>
+<body>
+    <%- include('navbar', {links: links}) %>
+    <h1> <%= actor.first_name %> <%= actor.last_name %></h1>
+    <h2> <%= actor.gender %></h2>
+    <img src="<%= actor.photo_url %>" alt="actor photo" style="width: 100px; height: 100px;">
+    <a href="/actors/<%= actor.id %>/update">Update</a>
+    <form action="/actors/<%= actor.id %>/delete" method="POST">
+        <button type="submit">Delete</button>
+    </form>
+    <h2>List of movies with this genre below: </h2>
+</body>
+</html>

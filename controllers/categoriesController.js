@@ -41,7 +41,6 @@ exports.createCategory = [
 ]
 
 exports.updateCategoryGet = async(req, res) => {
-    // const genre = genres.find(genre => genre.id == req.params.id);
     const genre = await db.getCategoryById(req.params.id);
     res.render("updateGenre", 
         { genre: genre });
@@ -64,8 +63,6 @@ exports.updateCategoryPost = [
     ];
 
 exports.deleteCategory = async(req, res) => {
-   // const genreIndex = genres.findIndex(genre => genre.id == req.params.id);
-   // genres.splice(genreIndex, 1);
     await db.deleteCategory(req.params.id);
     res.redirect("/categories");
 }
