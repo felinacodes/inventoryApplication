@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS directors (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     first_name VARCHAR (20) NOT NULL,
     last_name VARCHAR (20) NOT NULL,
+    gender VARCHAR (6),
     birth_date DATE CHECK (birth_date > '1900-01-01' AND birth_date <= '${currentDate}'),
     photo_url TEXT
 );
@@ -106,6 +107,25 @@ VALUES
     ('Kevin', 'Spacey', 'Male', '1959-07-26', '/public/images/actors/kevin_spacey.webp'),
     ('Kristen', 'Stewart', 'Female', '1990-04-09', '/public/images/actors/kristen_stewart.webp'),
     ('Matt', 'Damon', 'Male', '1970-10-08', '/public/images/actors/matt_damon.jpg');
+
+INSERT INTO directors (first_name, last_name, gender, birth_date, photo_url)
+VALUES 
+    ('Christopher', 'Nolan', 'Male', '1970-07-30', '/public/images/directors/christopher_nolan.webp'),
+    ('David', 'Fincher', 'Male', '1962-08-28', '/public/images/directors/david_fincher.jpg'),
+    ('Denis', 'Villeneuve', 'Male', '1967-10-03', '/public/images/directors/denis_villeneuve.jpg'),
+    ('James', 'Cameron', 'Male', '1954-08-16', '/public/images/directors/james_cameron.jpeg'),
+    ('Martin', 'Scorsese', 'Male', '1942-11-17', '/public/images/directors/martin_scorsese.webp'),
+    ('Quentin', 'Tarantino', 'Male', '1963-03-27', '/public/images/directors/quentin_tarantino.jpg'),
+    ('Ridley', 'Scott', 'Male', '1937-11-30', '/public/images/directors/ridley_scott.jpg'),
+    ('Steven', 'Spielberg', 'Male', '1946-12-18', '/public/images/directors/steven_spielberg.jpg'),
+    ('Tim', 'Burton', 'Male', '1958-08-25', '/public/images/directors/tim_burton.jpg'),
+    ('Ryan', 'Murphy', 'Male', '1965-11-30', '/public/images/directors/ryan_murphy.jpg'),
+    ('Ingmar', 'Bergman', 'Male', '1918-07-14', '/public/images/directors/ingmar_bergman.jpg'),
+    ('David', 'Lynch', 'Male', '1946-01-20', '/public/images/directors/david_lynch.jpg'),
+    ('Darren', 'Aronofsky', 'Male', '1969-02-12', '/public/images/directors/darren_aronofsky.jpg'),
+    ('Roman', 'Polanski', 'Male', '1933-08-18', '/public/images/directors/roman_polanski.jpg'),
+    ('Peter', 'Jackson', 'Male', '1961-10-31', '/public/images/directors/peter_jackson.jpg'),
+    ('Paul', 'Thomas Anderson', 'Male', '1970-06-26', '/public/images/directors/paul_thomas_anderson.jpg');
 `;
 
 async function main() {

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directors</title>
+</head>
+<body>
+    <%- include('navbar', {links: links}) %>
+    <h1>Directors List</h1>
+    <%- include('errors') %>
+    <form action="/directors" method="POST" enctype="multipart/form-data">
+        <label for="f_name">First Name:</label>
+        <input type="text" id="f_name" name="f_name">
+        <label for="l_name">Last Name:</label>
+        <input type="text" id="l_name" name="l_name">
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+        <label for="birth_date"> Birth Date: </label>
+        <input type="date" id="birth_date" name="birth_date">
+        <label for="photo">Photo:</label>
+        <input type="file" id="photo" name="photo">
+        <button type="submit">Add Director</button>
+    <ul>
+        <% directors.forEach(director => { %>
+            <li><%= director.first_name %> <%= director.last_name %>
+                <%= director.gender %>
+                <img src="<%= director.photo_url ? director.photo_url : '/public/images/default.jpg' %>" alt="director photo" style="width: 100px; height: 100px;">
+                <a href="/directors/<%= director.id %>">View</a>
+            </li>
+        <% }) %>
+    </ul>
+</body>
+</html>

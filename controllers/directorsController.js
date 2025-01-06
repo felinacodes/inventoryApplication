@@ -18,7 +18,7 @@ function deleteFile(filePath) {
     });
 }
 
-const validateActor = [
+const validateDirector = [
     body("f_name").trim().escape()
         .isAlpha().withMessage(alphaErr)
         .isLength({ min: 1, max: 20 }).withMessage(lengthErr),
@@ -38,81 +38,80 @@ const validateActor = [
         })
 ]
 
-exports.getAllActors = async(req, res) => {
-    const actors = await db.getAllActors();
-    //console.log(actors);
-    res.render("actors", { actors: actors });
+exports.getAllDirectors = async(req, res) => {
+    const directors = await db.getAllDirectors();
+    //console.log(directors);
+    res.render("directors", { directors: directors });
 }
 
-exports.getActorById = async(req, res) => {
-    const actor = await db.getActorById(req.params.id);
-    res.render("actor", { actor: actor });
+exports.getDirectorById = async(req, res) => {
+    const director = await db.getDirectorById(req.params.id);
+    res.render("director", { director: director });
 }
 
-exports.createActor = [
-    validateActor,
+exports.createDirector = [
+    validateDirector,
     async(req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const actors = await db.getAllActors();
+            const actors = await db.getAllDirectors();
             return res.status(400).render("actors",
                 {
-                    actors: actors,
+                    directors: directors,
                     errors: errors.array()
                 });
         }
         const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
         const { f_name, l_name, gender, birth_date } = req.body;
-        await db.addActor(
+        await db.addDirector(
             f_name || null,
             l_name || null,
             gender || null,
             birth_date || null,
             photoUrl
         );
-        res.redirect("/actors");
+        res.redirect("/directors");
     }
 ]
 
-exports.updateActorGet = async(req, res) => {
-    const actor = await db.getActorById(req.params.id);
-    res.render("updateActor",
-        {actor: actor});
+exports.updateDirectorGet = async(req, res) => {
+    const director = await db.getDirectorById(req.params.id);
+    res.render("updateDirector", { director: director });
 }
 
-exports.updateActorPost = [
-    validateActor,
+exports.updateDirectorPost = [
+    validateDirector,
     async(req, res) => {
-        const actor = await db.getActorById(req.params.id);
+        const director = await db.getDirectorById(req.params.id);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).render("updateActor", {
-                actor: actor,
+                director: director,
                 errors: errors.array()
             });
         }
-        let photoUrl = actor.photo_url;
+        let photoUrl = director.photo_url;
         // const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
         if (req.file) {
             // Delete the old photo if a new one is uploaded
-            if (actor.photo_url) {
-                deleteFile(actor.photo_url);
+            if (director.photo_url) {
+                deleteFile(director.photo_url);
             }
            photoUrl = `/public/uploads/${req.file.filename}`;
         }
         const { f_name, l_name, gender, birth_date} = req.body;
-        await db.updateActor(req.params.id, f_name, l_name, gender, birth_date ? birth_date : null, photoUrl);
-        res.redirect(`/actors/${req.params.id}`);
+        await db.updateDirector(req.params.id, f_name, l_name, gender, birth_date ? birth_date : null, photoUrl);
+        res.redirect(`/directors/${req.params.id}`);
     }
 ];
 
-exports.deleteActor = async (req,res) => {
-    const actor = await db.getActorById(req.params.id);
-    if (actor.photo_url) {
-        deleteFile(actor.photo_url);
+exports.deleteDirector = async (req,res) => {
+    const director = await db.getDirectorById(req.params.id);
+    if (director.photo_url) {
+        deleteFile(director.photo_url);
     }
-    await db.deleteActor(req.params.id);
-    res.redirect("/actors");
+    await db.deleteDirector(req.params.id);
+    res.redirect("/directors");
 };
 
 

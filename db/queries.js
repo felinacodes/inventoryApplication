@@ -1,3 +1,4 @@
+// const { getAllDirectors } = require('../controllers/directorsController');
 const pool = require('../db/pool');
 
 async function getAllCategories() {
@@ -44,6 +45,28 @@ async function deleteActor(id) {
     await pool.query('DELETE FROM actors WHERE id = $1', [id]);
 }
 
+async function getAllDirectors() {
+    const { rows } = await pool.query('SELECT * FROM directors');
+    return rows;
+}
+
+async function getDirectorById(id) {
+    const { rows } = await pool.query('SELECT * FROM directors WHERE id = $1', [id]);
+    return rows[0];
+}
+
+async function addDirector(f_name, l_name, gender, birth_date, photo_url) {
+    await pool.query('INSERT INTO directors (first_name, last_name, gender, birth_date, photo_url) VALUES ($1, $2, $3, $4, $5)', [f_name, l_name, gender, birth_date, photo_url]);
+}
+
+async function updateDirector(id, f_name, l_name, gender, birth_date, photo_url) {
+    await pool.query('UPDATE directors SET first_name = $1, last_name = $2, gender = $3, birth_date = $4, photo_url = $5 WHERE id = $6', [f_name, l_name, gender, birth_date, photo_url, id]);
+}
+
+async function deleteDirector(id) {
+    await pool.query('DELETE FROM directors WHERE id = $1', [id]);
+}
+
 module.exports = {
     getAllCategories,
     addCategory,
@@ -55,4 +78,9 @@ module.exports = {
     addActor,
     updateActor,
     deleteActor,
+    getAllDirectors,
+    getDirectorById,
+    addDirector,
+    updateDirector,
+    deleteDirector,
 };

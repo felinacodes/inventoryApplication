@@ -5,6 +5,7 @@ const categoriesRouter = require("./routes/categoriesRouter");
 const moviesRouter = require("./routes/moviesRouter");
 const searchRouter = require("./routes/searchRouter");
 const actorsRouter = require("./routes/actorsRouter");
+const directorsRouter = require("./routes/directorsRouter");
 const path = require("path");
 
 
@@ -14,6 +15,7 @@ const links = [
     { text: "movies", href: "/movies" },
     { text: "search", href: "/search" },
     { text: "actors", href: "/actors" },
+    { text: "directors", href: "/directors" }, 
 ];
 
 app.set("views", path.join(__dirname, "views"));
@@ -34,6 +36,7 @@ app.use("/search", searchRouter);
 app.use("/categories", categoriesRouter);
 app.use("/movies", moviesRouter);
 app.use("/actors", actorsRouter);
+app.use("/directors", directorsRouter);
 app.use("/", indexRouter);
 
 const PORT = process.env.APP_PORT || 3000;
