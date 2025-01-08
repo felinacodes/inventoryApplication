@@ -58,8 +58,8 @@ exports.createDirector = [
     async(req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const actors = await db.getAllDirectors();
-            return res.status(400).render("actors",
+            const directors = await db.getAllDirectors();
+            return res.status(400).render("directors",
                 {
                     directors: directors,
                     errors: errors.array()
@@ -89,7 +89,7 @@ exports.updateDirectorPost = [
         const director = await db.getDirectorById(req.params.id);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).render("updateActor", {
+            return res.status(400).render("updateDirector", {
                 director: director,
                 errors: errors.array()
             });

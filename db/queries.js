@@ -1,6 +1,25 @@
 // const { getAllDirectors } = require('../controllers/directorsController');
 const pool = require('../db/pool');
 
+function buildMultiWordQuery(baseQuery, fields, words) {
+    const conditions = [];
+    const values = [];
+
+    words.forEach((word, index) => {
+        fields.forEach(field => {
+            conditions.push(`${field} ILIKE $${values.length + 1}`);
+            values.push(`%${word}%`);
+        });
+    });
+
+    const whereClause = conditions.join(' OR ');
+    return {
+        query: `${baseQuery} WHERE ${whereClause}`,
+        values
+    };
+}
+
+
 async function getAllCategories() {
     const { rows } = await pool.query('SELECT * FROM genres');
     return rows;
@@ -177,6 +196,31 @@ async function getAllMoviesByDirector(director_id) {
     return rows;
 }
 
+async function searchMovies(query) {
+    const { rows } = await pool.query('SELECT * FROM movies WHERE title ILIKE $1', [`%${query}%`]);
+    return rows;
+}
+
+async function searchActors(query) {
+    const words = query.split(' ');
+    const { query: sqlQuery, values } = buildMultiWordQuery('SELECT * FROM actors', ['first_name', 'last_name'], words);
+    const { rows } = await pool.query(sqlQuery, values);
+    return rows;
+}
+
+async function searchDirectors(query) {
+    const words = query.split(' ');
+    const { query: sqlQuery, values } = buildMultiWordQuery('SELECT * FROM directors', ['first_name', 'last_name'], words);
+    const { rows } = await pool.query(sqlQuery, values);
+    return rows;
+}
+
+async function searchGenres(query) {
+    const words = query.split(' ');
+    const { query: sqlQuery, values } = buildMultiWordQuery('SELECT * FROM genres', ['name'], words);
+    const { rows } = await pool.query(sqlQuery, values);
+    return rows;
+}
 
 
 module.exports = {
@@ -212,4 +256,8 @@ module.exports = {
     getAllMoviesByGenre,
     getAllMoviesByActor,
     getAllMoviesByDirector,
+    searchMovies,
+    searchActors,
+    searchDirectors,
+    searchGenres,
 };

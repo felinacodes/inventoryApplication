@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+    <%- include('navbar', {links: links}) %>
+    <h1>Search Results</h1>
+    <div>
+        <h2>Movies</h2>
+        <ul>
+            <% results.movies.forEach(movie => { %>
+                <li><a href="/movies/<%= movie.id %>"><%= movie.title %></a></li>
+            <% }) %>
+        </ul>
+    </div>
+    <div>
+        <h2>Actors</h2>
+        <ul>
+            <% results.actors.forEach(actor => { %>
+                <li><a href="/actors/<%= actor.id %>"><%= actor.first_name %> <%= actor.last_name %></a></li>
+            <% }) %>
+        </ul>
+    </div>
+    <div>
+        <h2>Directors</h2>
+        <ul>
+            <% results.directors.forEach(director => { %>
+                <li><a href="/directors/<%= director.id %>"><%= director.first_name %> <%= director.last_name %></a></li>
+            <% }) %>
+        </ul>
+    </div>
+    <div>
+        <h2>Genres</h2>
+        <ul>
+            <% results.genres.forEach(genre => { %>
+                <li><a href="/genres/<%= genre.id %>"><%= genre.name %></a></li>
+            <% }) %>
+        </ul>
+    </div>
+</body>
+</html>
