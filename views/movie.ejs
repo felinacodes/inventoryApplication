@@ -8,7 +8,29 @@
 <body>
     <%- include('navbar', {links: links}) %>
     <h1> <%= movie.title %></h1>
-    <h5> <%= movie.year %></h5>
+    <h5> <%= movie.year ? movie.year : 'Unkown' %></h5>
+    <img src="<%= movie.photo_url ? movie.photo_url : '/public/images/default.jpg' %>" alt="movie poster" style="width: 100px; height: 100px;">
+    <h6> <%= movie.description ? movie.description : NULL  %></h6>
+    <h6> Genres:</h6>
+    <ul>
+        <% genres && genres.forEach(genre => { %>
+            <a href="/categories/<%= genre.genre_id %>"><li><%= genre.name %></li></a>
+        <% }) %>
+    </ul>
+    <h6> Actors: </h6>
+    <ul>
+        <% actors && actors.forEach(actor => { %>
+            <a href="/actors/<%= actor.actor_id %>"><li><%= actor.first_name %> <%= actor.last_name %></li></a>
+        <% }) %>
+    </ul>
+
+    <h6> Directors: </h6>
+    <ul>
+        <% directors && directors.forEach(director => { %>
+            <a href="/directors/<%= director.director_id %>"><li><%= director.first_name %> <%= director.last_name %></li></a>
+        <% }) %>
+    </ul>
+
     <a href="/movies/<%= movie.id %>/update">Update</a>
     <form action="/movies/<%= movie.id %>/delete" method="POST">
         <button type="submit">Delete</button>

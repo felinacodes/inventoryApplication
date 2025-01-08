@@ -47,9 +47,9 @@ app.listen(PORT, () => {
 
 //TODO 
 /*
-
-make directors. 
-make movies.
+movies -> delete functionality. 
+movies -> Add the new search bars on add.
+general -> Move the add new, to new pages. ? 
 
 1. populate queries
 2. fix controller to work with the db.

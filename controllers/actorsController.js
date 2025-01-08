@@ -40,7 +40,6 @@ const validateActor = [
 
 exports.getAllActors = async(req, res) => {
     const actors = await db.getAllActors();
-    //console.log(actors);
     res.render("actors", { actors: actors });
 }
 

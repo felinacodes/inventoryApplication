@@ -67,6 +67,100 @@ async function deleteDirector(id) {
     await pool.query('DELETE FROM directors WHERE id = $1', [id]);
 }
 
+async function getAllMovies() {
+    const { rows } = await pool.query('SELECT * FROM movies');
+    return rows;
+}
+
+async function getMovieById(id) {
+    const { rows } = await pool.query('SELECT * FROM movies WHERE id = $1', [id]);
+    return rows[0];
+}
+
+async function addMovie(title, year, description, photo_url) {
+    const result = await pool.query(
+        'INSERT INTO movies (title, year, description, photo_url) VALUES ($1, $2, $3, $4) RETURNING id',
+        [title, year, description, photo_url]
+    );
+    return result.rows[0]; // Ensure this returns the row with the id
+}
+
+async function addMovieGenre(movie_id, genre_id) {
+    await pool.query('INSERT INTO movie_genres (movie_id, genre_id) VALUES ($1, $2)', [movie_id, genre_id]);
+}
+
+async function addMovieActor(movie_id, actor_id) {
+    await pool.query('INSERT INTO movie_actors (movie_id, actor_id) VALUES ($1, $2)', [movie_id, actor_id]);
+}
+
+async function addMovieDirector(movie_id, director_id) {
+    await pool.query('INSERT INTO movie_directors (movie_id, director_id) VALUES ($1, $2)', [movie_id, director_id]);
+}
+
+async function getMovieGenres(movie_id) {
+    const { rows } = await pool.query(
+        `SELECT g.name, genre_id FROM genres g
+         JOIN movie_genres mg ON g.id = mg.genre_id
+         WHERE mg.movie_id = $1`,
+        [movie_id]
+    );
+    return rows;
+}
+
+async function getMovieActors(movie_id) {
+    const { rows } = await pool.query(
+        `SELECT a.first_name, a.last_name, actor_id FROM actors a
+         JOIN movie_actors ma ON a.id = ma.actor_id
+         WHERE ma.movie_id = $1`,
+        [movie_id]
+    );
+    return rows;
+}
+
+async function getMovieDirectors(movie_id) {
+    const { rows } = await pool.query(
+        `SELECT d.first_name, d.last_name, director_id FROM directors d
+         JOIN movie_directors md ON d.id = md.director_id
+         WHERE md.movie_id = $1`,
+        [movie_id]
+    );
+    return rows;
+}
+
+async function updateMovie(id, title, year, description, photo_url) {
+    await pool.query('UPDATE movies SET title = $1, year = $2, description = $3, photo_url = $4 WHERE id = $5', [title, year, description, photo_url, id]);
+}
+
+// async function updateMovieGenre(movie_id, genre_id) {
+//     await pool.query('UPDATE movie_genres SET movie_id = $1, genre_id = $2 WHERE movie_id = $1', [movie_id, genre_id]);
+// }
+
+// async function updateMovieActor(movie_id, actor_id) {
+//     await pool.query('UPDATE movie_actors SET movie_id = $1, actor_id = $2 WHERE movie_id = $1', [movie_id, actor_id]);
+// }
+
+// async function updateMovieDirector(movie_id, director_id) {
+//     await pool.query('UPDATE movie_directors SET movie_id = $1, director_id = $2 WHERE movie_id = $1', [movie_id, director_id]);
+// }
+
+async function deleteMovieGenres(movie_id) {
+    await pool.query('DELETE FROM movie_genres WHERE movie_id = $1', [movie_id]);
+}
+
+async function deleteMovieActors(movie_id) {
+    await pool.query('DELETE FROM movie_actors WHERE movie_id = $1', [movie_id]);
+}
+
+async function deleteMovieDirectors(movie_id) {
+    await pool.query('DELETE FROM movie_directors  WHERE movie_id = $1', [movie_id]);
+}
+
+async function deleteMovie(movie_id) {
+    await pool.query('DELETE FROM movies WHERE id = $1', [movie_id]);
+}
+
+
+
 module.exports = {
     getAllCategories,
     addCategory,
@@ -83,4 +177,21 @@ module.exports = {
     addDirector,
     updateDirector,
     deleteDirector,
+    getAllMovies,
+    getMovieById,
+    addMovie,
+    addMovieGenre,
+    addMovieActor,
+    addMovieDirector,
+    getMovieGenres,
+    getMovieActors,
+    getMovieDirectors,
+    updateMovie,
+    // updateMovieGenre,
+    // updateMovieActor,
+    // updateMovieDirector,
+    deleteMovieGenres,
+    deleteMovieActors,
+    deleteMovieDirectors,
+    deleteMovie,
 };

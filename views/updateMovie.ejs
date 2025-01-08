@@ -4,17 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Movie</title>
+    <style>
+          .selected-items {
+            list-style-type: none;
+            padding: 0;
+        }
+        .selected-items li {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px;
+            background-color: #ddd;
+            border-radius: 5px;
+        }
+        .selected-items li button {
+            margin-left: 5px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function addItem(inputId, listId, dataListId, inputName) {
+            const input = document.getElementById(inputId);
+            const list = document.getElementById(listId);
+            const itemName = input.value;
+            const itemOption = document.querySelector(`#${dataListId} option[value="${itemName}"]`);
+            
+            if (!itemOption) {
+                // alert('Please select a valid item from the list.');
+                
+                return; // Exits the function if the item is not valid
+            }
+
+            const itemId = itemOption.dataset.id;
+
+                        // Check if the item is already selected
+            if (document.querySelector(`#${listId} input[value="${itemId}"]`)) {
+                // alert('This item is already selected.');
+                return; // Exits the function if the item is already selected
+            }
+
+            if (itemName && itemId)  {
+                const li = document.createElement('li');
+                li.textContent = itemName;
+                const button = document.createElement('button');
+                button.textContent = 'x';
+                button.onclick = () => li.remove();
+                li.appendChild(button);
+
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = inputName;
+                hiddenInput.value = itemId;
+                li.appendChild(hiddenInput);
+
+                list.appendChild(li);
+                input.value = '';
+            }
+        }
+
+        // Function to render selected genres on page load
+        function renderSelectedItems(items, listId, inputName) {
+            // const selectedGenres = <%- JSON.stringify(MovieGenres) %>;
+            const list = document.getElementById(listId);
+            const nameFields = Object.keys(items[0]);
+
+            items.forEach(item => {
+                const li = document.createElement('li');
+                if (nameFields.length > 2) {
+                    li.textContent = item[nameFields[0]] + ' ' + item[nameFields[1]]; // Full name for actors and directors
+                } else {
+                    li.textContent = item[nameFields[0]]; // Name for genres
+                }
+                const button = document.createElement('button');
+                button.textContent = 'x';
+                button.onclick = () => li.remove();
+                li.appendChild(button);
+
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = inputName;
+                hiddenInput.value = item[nameFields[nameFields.length - 1]];
+                li.appendChild(hiddenInput);
+
+                list.appendChild(li);
+            });
+        }
+
+        window.onload = () => {
+            renderSelectedItems(<%- JSON.stringify(MovieGenres) %>, 'selected-genres', 'genre[]');
+            renderSelectedItems(<%- JSON.stringify(MovieActors) %>, 'selected-actors', 'actors[]');
+            renderSelectedItems(<%- JSON.stringify(MovieDirectors) %>, 'selected-directors', 'directors[]');
+        };
+    </script>
 </head>
 <body>
     <%- include('navbar', {links: links}) %>
     <h1>Update Movie</h1>
     <%- include('errors') %>
-    <form action="/movies/<%= movie.id %>/update" method="POST">
+    <form action="/movies/<%= movie.id %>/update" method="POST" enctype="multipart/form-data">
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" value="<%= movie.title %>">
         <label for="year">Year:</label>
         <input type="number" id="year" name="year" value="<%= movie.year %>">
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="\5" cols="50"><%= movie.description %></textarea>
+       
+        <label for="genre">Genre:</label>
+        <input type="text" id="genre-search" list="genre-list" placeholder="Search for genres...">
+        <datalist id="genre-list">
+            <% genres.forEach(genre => { %>
+                <option value="<%= genre.name %>" data-id="<%= genre.id %>"><%= genre.name %></option>
+            <% }) %>
+        </datalist>
+        <button type="button" onclick="addItem('genre-search', 'selected-genres', 'genre-list', 'genre[]')">Add Genre</button>
+        <ul id="selected-genres" class="selected-items"></ul>
+        
+        <label for="actors">Actors:</label>
+        <input type="text" id="actor-search" list="actor-list" placeholder="Search for actors...">
+        <datalist id="actor-list">
+            <% actors.forEach(actor => { %>
+                <option value="<%= actor.first_name %> <%= actor.last_name %>" data-id="<%= actor.id %>"><%= actor.first_name %> <%= actor.last_name %></option>
+            <% }) %>
+        </datalist>
+        <button type="button" onclick="addItem('actor-search', 'selected-actors', 'actor-list', 'actors[]')">Add Actor</button>
+        <ul id="selected-actors" class="selected-items"></ul>
+        
+        <label for="directors">Directors:</label>
+        <input type="text" id="director-search" list="director-list" placeholder="Search for directors...">
+        <datalist id="director-list">
+            <% directors.forEach(director => { %>
+                <option value="<%= director.first_name %> <%= director.last_name %>" data-id="<%= director.id %>"><%= director.first_name %> <%= director.last_name %></option>
+            <% }) %>
+        </datalist>
+        <button type="button" onclick="addItem('director-search', 'selected-directors', 'director-list', 'directors[]')">Add Director</button>
+        <ul id="selected-directors" class="selected-items"></ul>
+
+        <label for="poster">Poster:</label>
+        <img id="photoPreview"
+        src="<%= movie.photo_url ? movie.photo_url : '/public/images/default.jpg' %>" 
+        alt="movies's Photo" 
+        width="100"
+        height="100"
+        />
+        <input type="file" id="photo" name="photo">
         <button type="submit">Update Movie</button>
     </form>
+
+    <script>
+        const photoInput = document.getElementById('photo');
+        const photoPreview = document.getElementById('photoPreview');
+
+        photoInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photoPreview.src = e.target.result; // Set the preview image source
+                };
+                reader.readAsDataURL(file); // Read the file as a data URL
+            } else {
+                // If no file is selected, revert to the default or existing photo
+                photoPreview.src = '<%= movie.photo_url || "/images/default.jpg" %>';
+            }
+        });
+    </script>
 </body>
 </html>

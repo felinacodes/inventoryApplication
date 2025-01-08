@@ -1,83 +1,207 @@
 const { body, validationResult } = require("express-validator");
+const db = require("../db/queries");
+const fs = require("fs");
+const path = require("path");
 
 const lengthErr = "Title must be between 1 and 50 characters.";
 
-const movies = [
-    { id: 1, title: "The Shawshank Redemption", year: 1994 },
-    { id: 2, title: "The Godfather", year: 1972 },
-    { id: 3, title: "The Dark Knight", year: 2008 },
-    { id: 4, title: "The Lord of the Rings: The Return of the King", year: 2003 },
-    { id: 5, title: "Pulp Fiction", year: 1994 },
-    { id: 6, title: "Schindler's List", year: 1993 },
-    { id: 7, title: "Inception", year: 2010 },
-    { id: 8, title: "Fight Club", year: 1999 },
-    { id: 9, title: "Forrest Gump", year: 1994 },
-    { id: 10, title: "The Matrix", year: 1999 },
-];
+function deleteFile(filePath) {
+    fs.unlink(path.join(__dirname, '..', filePath), (err) => {
+        if (err){
+            console.error(`Error deleting file: ${filePath}`, err);
+        } else {
+            console.log(`File deleted: ${filePath}`);
+        }
+    });
+}
 
 const validateMovie = [
     body("title").trim().escape()
         .isLength({ min: 1, max: 50 }).withMessage(lengthErr),
     body("year")
-        .isInt({ min: 1895, max: 2500 }).withMessage("Year must be between 1895 and 2500.")
+        .isInt({ min: 1895, max: 2500 }).withMessage("Year must be between 1895 and 2500."),
+    body("description").trim().escape()
+        .isLength({ min: 1, max: 500 }).withMessage("Description must be between 1 and 500 characters.")
 ]
 
 
-exports.getAllMovies = (req, res) => {    
-    res.render("movies", { movies: movies });
+exports.getAllMovies =async (req, res) => {    
+    const movies = await db.getAllMovies();
+    const genres = await db.getAllCategories();
+    const directors = await db.getAllDirectors();
+    const actors = await db.getAllActors();
+    res.render("movies",
+         { movies: movies,
+           directors: directors,
+           actors: actors,
+           genres: genres }
+        );
 };
 
-exports.getMovieById = (req, res) => {            
-    res.render("movie", { movie: movies.find(movie => movie.id == req.params.id) });
-    // res.send(`Movie with id ${req.params.id}`);
+exports.getMovieById = async(req, res) => {            
+    const movie = await db.getMovieById(req.params.id);
+    const genres = await db.getMovieGenres(req.params.id);
+    const actors = await db.getMovieActors(req.params.id);
+    const directors = await db.getMovieDirectors(req.params.id);
+    res.render("movie", 
+        { 
+            movie: movie,
+            genres: genres,
+            actors: actors,
+            directors: directors
+        });
 };
+
+
 
 exports.createMovie = [
     validateMovie,
-    (req, res) => {
+    async(req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).render("movies",
-                {
-                    movies: movies,
-                    errors: errors.array()
-                });
+            const movies = await db.getAllMovies();
+            const genres = await db.getAllCategories();
+            const directors = await db.getAllDirectors();
+            const actors = await db.getAllActors();
+            return res.status(400).render("movies", {
+                movies: movies,
+                genres: genres,
+                directors: directors,
+                actors: actors,
+                errors: errors.array()
+            });
         }
-        const movie = {
-            id: movies.length + 1,
-            title: req.body.title,
-            year: req.body.year
-        };
-        movies.push(movie);
+        const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
+        const { title, year, description, genre, actors, directors } = req.body;
+        const movieID = await db.addMovie(
+            title || null,
+            year || null,
+            description || null,
+            photoUrl
+        );
+
+        if (!movieID) {
+            throw new Error('Failed to retrieve movie ID after insertion.');
+        }
+
+        // Insert genres associations
+        if (genre && Array.isArray(genre)) {
+            for (const genreId of genre) {
+                await db.addMovieGenre(movieID.id, genreId);
+            }
+        }
+
+        // Insert actors associations
+        if (actors && Array.isArray(actors)) {
+            for (const actorId of actors) {
+                await db.addMovieActor(movieID.id, actorId);
+            }
+        }
+
+        // Insert directors associations
+        if (directors && Array.isArray(directors)) {
+            for (const directorId of directors) {
+                await db.addMovieDirector(movieID.id, directorId);
+            }
+        }
         res.redirect("/movies");
     }
 ];
 
-exports.updateMovieGet = (req, res) => {
-    const movie = movies.find(movie => movie.id == req.params.id);
-    res.render("updateMovie", { movie: movie });
+exports.updateMovieGet = async(req, res) => {
+    const movie = await db.getMovieById(req.params.id);
+    const MovieGenres = await db.getMovieGenres(req.params.id);
+    const MovieDirectors = await db.getMovieDirectors(req.params.id);
+    const MovieActors = await db.getMovieActors(req.params.id);
+    const genres = await db.getAllCategories();
+    const directors = await db.getAllDirectors();
+    const actors = await db.getAllActors();
+    res.render("updateMovie", { 
+        movie: movie,
+        genres: genres,
+        directors: directors,
+        actors: actors, 
+        MovieGenres: MovieGenres,
+        MovieDirectors: MovieDirectors,
+        MovieActors: MovieActors
+    });
 };
 
 exports.updateMoviePost = [
     validateMovie,
-    (req,res) => {
+    async(req,res) => {
+        const movie = await db.getMovieById(req.params.id);
+        const MovieGenres = await db.getMovieGenres(req.params.id);
+        const MovieDirectors = await db.getMovieDirectors(req.params.id);
+        const MovieActors = await db.getMovieActors(req.params.id);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
+            const genres = await db.getAllCategories();
+            const directors = await db.getAllDirectors();
+            const actors = await db.getAllActors();
             return res.status(400).render("updateMovie",
                 {
-                    movie: { id: req.params.id, title: req.body.title, year: req.body.year },
+                    movie: movie,
+                    genres: genres,
+                    directors: directors,
+                    actors: actors, 
+                    MovieGenres: MovieGenres,
+                    MovieDirectors: MovieDirectors,
+                    MovieActors: MovieActors,
                     errors: errors.array()
                 });
         }
-        const movie = movies.find(movie => movie.id == req.params.id);
-        movie.title = req.body.title;
-        movie.year = req.body.year;
+        let photoUrl = movie.photo_url;
+        if (req.file) {
+            deleteFile(photoUrl);
+            photoUrl = `/public/uploads/${req.file.filename}`;
+        }
+            photoUrl = `/public/uploads/${req.file.filename}`;
+        //const movie = movies.find(movie => movie.id == req.params.id);
+        const { title, year, description, genre, actors, directors } = req.body;
+        await db.updateMovie(req.params.id, title, year, description, photoUrl);
+        // Update genres associations
+
+         if (!movie) {
+            throw new Error('Failed to retrieve movie ID after insertion.');
+        }
+        await db.deleteMovieGenres(req.params.id);
+        await db.deleteMovieActors(req.params.id);
+        await db.deleteMovieDirectors(req.params.id);
+        // Insert genres associations
+        if (genre && Array.isArray(genre)) {
+            for (const genreId of genre) {
+                await db.addMovieGenre(movie.id, genreId);
+            }
+        }
+
+        // Insert actors associations
+        if (actors && Array.isArray(actors)) {
+            for (const actorId of actors) {
+                await db.addMovieActor(movie.id, actorId);
+            }
+        }
+
+        // Insert directors associations
+        if (directors && Array.isArray(directors)) {
+            for (const directorId of directors) {
+                await db.addMovieDirector(movie.id, directorId);
+            }
+        }
         res.redirect(`/movies/${req.params.id}`);
     }
 ];
 
-exports.deleteMovie = (req, res) => {
-    const index = movies.findIndex(movie => movie.id == req.params.id);
-    movies.splice(index , 1);
+exports.deleteMovie = async(req, res) => {
+    const movie = await db.getMovieById(req.params.id);
+    if (movie.photo_url) {
+        deleteFile(movie.photo_url);
+    }
+    await db.deleteMovieGenres(req.params.id);
+    await db.deleteMovieActors(req.params.id);
+    await db.deleteMovieDirectors(req.params.id);
+
+    await db.deleteMovie(req.params.id);
+
     res.redirect("/movies");
 };
