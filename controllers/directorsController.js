@@ -46,7 +46,11 @@ exports.getAllDirectors = async(req, res) => {
 
 exports.getDirectorById = async(req, res) => {
     const director = await db.getDirectorById(req.params.id);
-    res.render("director", { director: director });
+    const movies = await db.getAllMoviesByDirector(req.params.id);
+    res.render("director", { 
+        director: director,
+        movies: movies
+    });
 }
 
 exports.createDirector = [

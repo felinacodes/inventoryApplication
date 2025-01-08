@@ -131,18 +131,6 @@ async function updateMovie(id, title, year, description, photo_url) {
     await pool.query('UPDATE movies SET title = $1, year = $2, description = $3, photo_url = $4 WHERE id = $5', [title, year, description, photo_url, id]);
 }
 
-// async function updateMovieGenre(movie_id, genre_id) {
-//     await pool.query('UPDATE movie_genres SET movie_id = $1, genre_id = $2 WHERE movie_id = $1', [movie_id, genre_id]);
-// }
-
-// async function updateMovieActor(movie_id, actor_id) {
-//     await pool.query('UPDATE movie_actors SET movie_id = $1, actor_id = $2 WHERE movie_id = $1', [movie_id, actor_id]);
-// }
-
-// async function updateMovieDirector(movie_id, director_id) {
-//     await pool.query('UPDATE movie_directors SET movie_id = $1, director_id = $2 WHERE movie_id = $1', [movie_id, director_id]);
-// }
-
 async function deleteMovieGenres(movie_id) {
     await pool.query('DELETE FROM movie_genres WHERE movie_id = $1', [movie_id]);
 }
@@ -157,6 +145,36 @@ async function deleteMovieDirectors(movie_id) {
 
 async function deleteMovie(movie_id) {
     await pool.query('DELETE FROM movies WHERE id = $1', [movie_id]);
+}
+
+async function getAllMoviesByGenre(genre_id) {
+    const { rows } = await pool.query(
+        `SELECT * FROM movies m
+         JOIN movie_genres mg ON m.id = mg.movie_id
+         WHERE mg.genre_id = $1`,
+        [genre_id]
+    );
+    return rows;
+}
+
+async function getAllMoviesByActor(actor_id) {
+    const { rows } = await pool.query(
+        `SELECT * FROM movies m
+         JOIN movie_actors ma ON m.id = ma.movie_id
+         WHERE ma.actor_id = $1`,
+         [actor_id]
+    );
+    return rows;
+}
+
+async function getAllMoviesByDirector(director_id) {
+    const { rows } = await pool.query(
+        `SELECT * FROM movies m
+         JOIN movie_directors md ON m.id = md.movie_id
+         WHERE md.director_id = $1`,
+         [director_id]
+    );
+    return rows;
 }
 
 
@@ -187,11 +205,11 @@ module.exports = {
     getMovieActors,
     getMovieDirectors,
     updateMovie,
-    // updateMovieGenre,
-    // updateMovieActor,
-    // updateMovieDirector,
     deleteMovieGenres,
     deleteMovieActors,
     deleteMovieDirectors,
     deleteMovie,
+    getAllMoviesByGenre,
+    getAllMoviesByActor,
+    getAllMoviesByDirector,
 };

@@ -19,7 +19,11 @@ exports.getAllCategories = async(req, res) => {
 
 exports.getCategoryById = async(req, res) => {
     const genre = await db.getCategoryById(req.params.id);
-    res.render("genre", { genre: genre });
+    const movies = await db.getAllMoviesByGenre(req.params.id);
+    res.render("genre", { 
+        genre: genre,
+        movies: movies 
+    });
 }
 
 

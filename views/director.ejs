@@ -16,6 +16,17 @@
     <form action="/directors/<%= director.id %>/delete" method="POST">
         <button type="submit">Delete</button>
     </form>
-    <h2>List of movies with this genre below: </h2>
+    <h2>List of movies with directed below: </h2>
+    <ul>
+        <% (console.log(movies)); %>
+        <% movies && movies.forEach(movie => { %>
+            <a href="/movies/<%= movie.movie_id %>">
+                <li>
+                    <%= movie.title %>
+                    <img src="<%= movie.photo_url ? movie.photo_url : '/public/images/default.jpg' %>" alt="movie poster" style="width: 100px; height: 100px;">
+                </li>
+            </a>
+        <% }) %>
+    </ul>
 </body>
 </html>

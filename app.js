@@ -47,14 +47,7 @@ app.listen(PORT, () => {
 
 //TODO 
 /*
-movies -> delete functionality. 
-movies -> Add the new search bars on add.
-general -> Move the add new, to new pages. ? 
 
-1. populate queries
-2. fix controller to work with the db.
-3. update views/controllers to handle new fields.
-4. fix delete functionality.
 5. handle errors everywhere.
 6. secure update/delete.
 7. add search functionality.

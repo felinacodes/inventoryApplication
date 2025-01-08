@@ -45,7 +45,11 @@ exports.getAllActors = async(req, res) => {
 
 exports.getActorById = async(req, res) => {
     const actor = await db.getActorById(req.params.id);
-    res.render("actor", { actor: actor });
+    const movies = await db.getAllMoviesByActor(req.params.id);
+    res.render("actor", { 
+        actor: actor,
+        movies: movies
+    });
 }
 
 exports.createActor = [

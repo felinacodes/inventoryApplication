@@ -6,6 +6,9 @@ const path = require("path");
 const lengthErr = "Title must be between 1 and 50 characters.";
 
 function deleteFile(filePath) {
+    if (!filePath) {
+        return;
+    }
     fs.unlink(path.join(__dirname, '..', filePath), (err) => {
         if (err){
             console.error(`Error deleting file: ${filePath}`, err);
@@ -156,7 +159,7 @@ exports.updateMoviePost = [
             deleteFile(photoUrl);
             photoUrl = `/public/uploads/${req.file.filename}`;
         }
-            photoUrl = `/public/uploads/${req.file.filename}`;
+           // photoUrl = `/public/uploads/${req.file.filename}`;
         //const movie = movies.find(movie => movie.id == req.params.id);
         const { title, year, description, genre, actors, directors } = req.body;
         await db.updateMovie(req.params.id, title, year, description, photoUrl);
