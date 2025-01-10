@@ -21,6 +21,10 @@
         </select>
         <label for="birth_date"> Birth Date: </label>
         <input type="date" id="birth_date" name="birth_date" value="<%= actor.birth_date ? actor.birth_date.toISOString().split('T')[0] : '' %>">
+
+        <label for="death_date"> Death Date: (leave it empty if alive)</label>
+        <input type="date" id="death_date" name="death_date" value="<%= actor.death_date ? actor.death_date.toISOString().split('T')[0] : '' %>">
+        
         <label for="photo">Photo:</label>
         <img id="photoPreview"
         src="<%= actor.photo_url ? actor.photo_url : '/public/images/default.jpg' %>" 

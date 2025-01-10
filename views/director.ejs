@@ -10,7 +10,7 @@
     <h1> <%= director.first_name %> <%= director.last_name %></h1>
     <h2> <%= director.gender? director.gender : 'Unkown' %></h2>
     <h3> <%= director.birth_date ? new Date(director.birth_date).toDateString() :'Unkown' %></h3>
-    <h3> <%= director.birth_date ? Math.floor((new Date() - new Date(director.birth_date)) / (365.25 * 24 * 60 * 60 * 1000)) : 'Unkown' %></h3>
+    <h3> <%= director.death_date ? `Died at age ${director.age} on ${new Date(director.death_date).toDateString()}`: director.age%></h3>
     <img src="<%= director.photo_url ? director.photo_url : '/public/images/default.jpg' %>" alt="director photo" style="width: 100px; height: 100px;">
     <a href="/directors/<%= director.id %>/update">Update</a>
     <form action="/directors/<%= director.id %>/delete" method="POST">

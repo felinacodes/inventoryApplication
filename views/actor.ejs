@@ -10,7 +10,7 @@
     <h1> <%= actor.first_name %> <%= actor.last_name %></h1>
     <h2> <%= actor.gender? actor.gender : 'Unkown' %></h2>
     <h3> <%= actor.birth_date ? new Date(actor.birth_date).toDateString() :'Unkown' %></h3>
-    <h3> <%= actor.birth_date ? Math.floor((new Date() - new Date(actor.birth_date)) / (365.25 * 24 * 60 * 60 * 1000)) : 'Unkown' %></h3>
+    <h3> <%= actor.death_date ? `Died at age ${actor.age} on ${new Date(actor.death_date).toDateString()}`: actor.age%></h3>
     <img src="<%= actor.photo_url ? actor.photo_url : '/public/images/default.jpg' %>" alt="actor photo" style="width: 100px; height: 100px;">
     <a href="/actors/<%= actor.id %>/update">Update</a>
     <form action="/actors/<%= actor.id %>/delete" method="POST">

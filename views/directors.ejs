@@ -21,6 +21,10 @@
         </select>
         <label for="birth_date"> Birth Date: </label>
         <input type="date" id="birth_date" name="birth_date">
+
+        <label for="death_date"> Death Date: (leave it empty if alive)</label> 
+        <input type="date" id="death_date" name="death_date">
+
         <label for="photo">Photo:</label>
         <input type="file" id="photo" name="photo">
         <button type="submit">Add Director</button>
@@ -34,7 +38,7 @@
                 filter: filter,
                 sortOptions: [
                 { value: 'full_name', text: 'Name' }, 
-                { value: 'birth_date', text: 'Age' },
+                { value: 'age', text: 'Age' },
                 ],
             filterOptions: [
                 'Male',

@@ -46,12 +46,11 @@ app.listen(PORT, () => {
 
 //TODO 
 /*
-1. Add the filters to actors, directors and categories.
-2. add pagination.
-3. handle errors everywhere.
-4. secure update/delete.
-5. style.
-6. add documentation.
-7. deploy.
+1. add pagination.
+2. handle errors everywhere.
+3. secure update/delete.
+4. style.
+5. add documentation.
+6. deploy.
 */
 

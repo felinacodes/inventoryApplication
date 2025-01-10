@@ -42,8 +42,6 @@ async function deleteCategory(id) {
 }
 
 async function getAllActors(sort_by = 'first_name', order = 'asc', filter) {
-    // const { rows } = await pool.query('SELECT * FROM actors');
-    // return rows;
     let query = 'SELECT * FROM actors';
     const queryParams = [];
 
@@ -52,7 +50,7 @@ async function getAllActors(sort_by = 'first_name', order = 'asc', filter) {
         queryParams.push(filter);
     }
 
-    const validSortColumns = ['first_name','birth_date'];
+    const validSortColumns = ['first_name','age'];
     const validOrder = ['asc', 'desc'];
 
     if (!validSortColumns.includes(sort_by)) {
@@ -81,12 +79,12 @@ async function getActorById(id) {
     return rows[0]; 
 }
 
-async function addActor(f_name, l_name, gender, birth_date, photo_url) {
-    await pool.query('INSERT INTO actors (first_name, last_name, gender, birth_date, photo_url) VALUES ($1, $2, $3, $4, $5)', [f_name, l_name, gender, birth_date, photo_url]);
+async function addActor(f_name, l_name, gender, birth_date, photo_url, death_date) {
+    await pool.query('INSERT INTO actors (first_name, last_name, gender, birth_date, death_date, photo_url) VALUES ($1, $2, $3, $4, $5, $6)', [f_name, l_name, gender, birth_date, death_date, photo_url]);
 }
 
-async function updateActor(id, f_name, l_name, gender, birth_date, photo_url) {
-    await pool.query('UPDATE actors SET first_name = $1, last_name = $2, gender = $3, birth_date = $4, photo_url = $5 WHERE id = $6',[f_name, l_name, gender, birth_date, photo_url, id]);
+async function updateActor(id, f_name, l_name, gender, birth_date, death_date, photo_url) {
+    await pool.query('UPDATE actors SET first_name = $1, last_name = $2, gender = $3, birth_date = $4, death_date = $5, photo_url = $6 WHERE id = $7',[f_name, l_name, gender, birth_date, death_date, photo_url, id]);
 }
 
 async function deleteActor(id) {
@@ -104,7 +102,7 @@ async function getAllDirectors(sort_by = 'first_name', order = 'asc', filter) {
         queryParams.push(filter);
     }
 
-    const validSortColumns = ['first_name', 'birth_date'];
+    const validSortColumns = ['first_name', 'age'];
     const validOrder = ['asc', 'desc'];
 
     if (!validSortColumns.includes(sort_by)) {
@@ -130,12 +128,12 @@ async function getDirectorById(id) {
     return rows[0];
 }
 
-async function addDirector(f_name, l_name, gender, birth_date, photo_url) {
-    await pool.query('INSERT INTO directors (first_name, last_name, gender, birth_date, photo_url) VALUES ($1, $2, $3, $4, $5)', [f_name, l_name, gender, birth_date, photo_url]);
+async function addDirector(f_name, l_name, gender, birth_date, death_date, photo_url) {
+    await pool.query('INSERT INTO directors (first_name, last_name, gender, birth_date, death_date, photo_url) VALUES ($1, $2, $3, $4, $5, $6)', [f_name, l_name, gender, birth_date, death_date, photo_url]);
 }
 
-async function updateDirector(id, f_name, l_name, gender, birth_date, photo_url) {
-    await pool.query('UPDATE directors SET first_name = $1, last_name = $2, gender = $3, birth_date = $4, photo_url = $5 WHERE id = $6', [f_name, l_name, gender, birth_date, photo_url, id]);
+async function updateDirector(id, f_name, l_name, gender, birth_date, death_date, photo_url) {
+    await pool.query('UPDATE directors SET first_name = $1, last_name = $2, gender = $3, birth_date = $4, death_date = $5, photo_url = $6 WHERE id = $7', [f_name, l_name, gender, birth_date, death_date, photo_url, id]);
 }
 
 async function deleteDirector(id) {

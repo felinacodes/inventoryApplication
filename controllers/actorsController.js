@@ -90,16 +90,16 @@ exports.createActor = [
                 });
         }
         const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
-        const { f_name, l_name, gender, birth_date } = req.body;
+        const { f_name, l_name, gender, birth_date, death_date } = req.body;
         await db.addActor(
             f_name || null,
             l_name || null,
             gender || null,
             birth_date || null,
-            photoUrl
+            photoUrl,
+            death_date || null
         );
-        
-        res.redirect(`/actors?sort_by=first_name&order=asc&filter=all`);
+        res.redirect(`/actors`);
     }
 ]
 
@@ -129,8 +129,8 @@ exports.updateActorPost = [
             }
            photoUrl = `/public/uploads/${req.file.filename}`;
         }
-        const { f_name, l_name, gender, birth_date} = req.body;
-        await db.updateActor(req.params.id, f_name, l_name, gender, birth_date ? birth_date : null, photoUrl);
+        const { f_name, l_name, gender, birth_date, death_date} = req.body;
+        await db.updateActor(req.params.id, f_name, l_name, gender, birth_date ? birth_date : null, death_date ? death_date : null, photoUrl);
         res.redirect(`/actors/${req.params.id}`);
     }
 ];

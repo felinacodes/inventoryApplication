@@ -90,12 +90,13 @@ exports.createDirector = [
                 });
         }
         const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
-        const { f_name, l_name, gender, birth_date } = req.body;
+        const { f_name, l_name, gender, birth_date, death_date} = req.body;
         await db.addDirector(
             f_name || null,
             l_name || null,
             gender || null,
             birth_date || null,
+            death_date || null,
             photoUrl
         );
         res.redirect("/directors");
@@ -127,8 +128,17 @@ exports.updateDirectorPost = [
             }
            photoUrl = `/public/uploads/${req.file.filename}`;
         }
-        const { f_name, l_name, gender, birth_date} = req.body;
-        await db.updateDirector(req.params.id, f_name, l_name, gender, birth_date ? birth_date : null, photoUrl);
+        const { f_name, l_name, gender, birth_date, death_date} = req.body;
+
+        // Validate birth_date and death_date
+        // if (!birth_date && death_date) {
+        //     return res.status(400).render("updateDirector", {
+        //         director: director,
+        //         errors: [{ msg: "Birth date is required if death date is provided." }]
+        //     });
+        // }
+
+        await db.updateDirector(req.params.id, f_name, l_name, gender, birth_date ? birth_date : null, death_date ? death_date : null, photoUrl);
         res.redirect(`/directors/${req.params.id}`);
     }
 ];
