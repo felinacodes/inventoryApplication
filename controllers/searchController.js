@@ -13,8 +13,6 @@ const { body, validationResult } = require("express-validator");
 
 async function searchController(req, res) {
     const query = req.query.q;
-    console.log(query);
- //   res.render('searchResults');
     if (!query) {
       return res.render('searchResults', { results: []});
     }

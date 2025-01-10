@@ -13,7 +13,6 @@ const links = [
     { text: "home", href: "/" },
     { text: "categories", href: "/categories" },
     { text: "movies", href: "/movies" },
-    { text: "search", href: "/search" },
     { text: "actors", href: "/actors" },
     { text: "directors", href: "/directors" }, 
 ];
@@ -47,18 +46,12 @@ app.listen(PORT, () => {
 
 //TODO 
 /*
-
-5. handle errors everywhere.
-6. secure update/delete.
-7. add search functionality.
-13. add pagination.
-14. add sorting.
-15. add filtering.
-16. style.
-17. add documentation.
-18. deploy.
-
-
-
+1. Add the filters to actors, directors and categories.
+2. add pagination.
+3. handle errors everywhere.
+4. secure update/delete.
+5. style.
+6. add documentation.
+7. deploy.
 */
 

@@ -1,5 +1,6 @@
 const { Router } = require('express');
-const { getAllActors, getActorById, createActor, deleteActor, updateActorGet, updateActorPost} = require ("../controllers/actorsController");
+const { getAllActors, getActorById, createActor, deleteActor, updateActorGet, 
+    updateActorPost} = require ("../controllers/actorsController");
 const upload = require('./multer');
 
 const actorsRouter = Router();

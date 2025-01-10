@@ -1,4 +1,3 @@
-// const { getAllDirectors } = require('../controllers/directorsController');
 const pool = require('../db/pool');
 
 function buildMultiWordQuery(baseQuery, fields, words) {
@@ -21,7 +20,7 @@ function buildMultiWordQuery(baseQuery, fields, words) {
 
 
 async function getAllCategories() {
-    const { rows } = await pool.query('SELECT * FROM genres');
+    const { rows } = await pool.query('SELECT * FROM genres ORDER BY LOWER(name)');
     return rows;
 }
 
@@ -42,8 +41,38 @@ async function deleteCategory(id) {
     await pool.query('DELETE FROM genres WHERE id = $1', [id]);
 }
 
-async function getAllActors() {
-    const { rows } = await pool.query('SELECT * FROM actors');
+async function getAllActors(sort_by = 'first_name', order = 'asc', filter) {
+    // const { rows } = await pool.query('SELECT * FROM actors');
+    // return rows;
+    let query = 'SELECT * FROM actors';
+    const queryParams = [];
+
+    if (filter && filter !== 'all') {
+        query += ' WHERE gender = $1';
+        queryParams.push(filter);
+    }
+
+    const validSortColumns = ['first_name','birth_date'];
+    const validOrder = ['asc', 'desc'];
+
+    if (!validSortColumns.includes(sort_by)) {
+        sort_by = 'first_name';
+    }
+
+    if (!validOrder.includes(order)) {
+        order = 'asc';
+    }
+
+    // query += ` ORDER BY ${sort_by} ${order}`;
+
+     // Add sorting and ordering
+     if (sort_by === 'first_name') {
+        query += ` ORDER BY LOWER(first_name) ${order}, LOWER(last_name) ${order}`;
+    } else {
+        query += ` ORDER BY ${sort_by} ${order}`;
+    }
+
+    const { rows } = await pool.query(query, queryParams);
     return rows;
 }
 
@@ -64,8 +93,35 @@ async function deleteActor(id) {
     await pool.query('DELETE FROM actors WHERE id = $1', [id]);
 }
 
-async function getAllDirectors() {
-    const { rows } = await pool.query('SELECT * FROM directors');
+async function getAllDirectors(sort_by = 'first_name', order = 'asc', filter) {
+    // const { rows } = await pool.query('SELECT * FROM directors');
+    // return rows;
+    let query = 'SELECT * FROM directors';
+    const queryParams = [];
+
+    if (filter && filter!=='all') {
+        query += ' WHERE gender = $1';
+        queryParams.push(filter);
+    }
+
+    const validSortColumns = ['first_name', 'birth_date'];
+    const validOrder = ['asc', 'desc'];
+
+    if (!validSortColumns.includes(sort_by)) {
+        sort_by = 'first_name';
+    }
+
+    if (!validOrder.includes(order)) {
+        order = 'asc';
+    }
+
+    if(sort_by === 'first_name') {
+        query += ` ORDER BY LOWER(first_name) ${order}, LOWER(last_name) ${order}`;
+    } else {
+        query += ` ORDER BY ${sort_by} ${order}`;
+    }
+
+    const { rows } = await pool.query(query, queryParams);
     return rows;
 }
 
@@ -86,9 +142,53 @@ async function deleteDirector(id) {
     await pool.query('DELETE FROM directors WHERE id = $1', [id]);
 }
 
-async function getAllMovies() {
-    const { rows } = await pool.query('SELECT * FROM movies');
+async function getAllMovies(sort_by = 'title', order = 'asc', filter) {
+    let query = 'SELECT * FROM movies';
+    const queryParams = [];
+
+    // Handle filtering
+    if (filter && filter !== 'all') {
+        query += ' WHERE year = $1';
+        queryParams.push(filter);
+    }
+
+    // Validate sort_by and order to prevent SQL injection
+    const validSortColumns = ['title', 'year'];
+    const validOrder = ['asc', 'desc'];
+
+    if (!validSortColumns.includes(sort_by)) {
+        sort_by = 'title';
+    }
+
+    if (!validOrder.includes(order)) {
+        order = 'asc';
+    }
+
+    // Add sorting, ordering, and pagination
+    if (sort_by === 'title') {
+        query += ` ORDER BY LOWER(title) ${order}`;
+    } else {
+    query += ` ORDER BY ${sort_by} ${order}`;
+    }
+
+    const { rows } = await pool.query(query, queryParams);
     return rows;
+};
+
+async function getAllYears(){
+    const { rows } = await pool.query('SELECT DISTINCT year FROM movies ORDER BY year');
+    return rows.map(row => row.year);
+}
+
+async function getAllYearsByGenre(id) {
+    const { rows } = await pool.query(
+        `SELECT DISTINCT year FROM movies m
+         JOIN movie_genres mg ON m.id = mg.movie_id
+         WHERE mg.genre_id = $1
+         ORDER BY year`,
+         [id]
+    );
+    return rows.map(row => row.year);
 }
 
 async function getMovieById(id) {
@@ -101,7 +201,7 @@ async function addMovie(title, year, description, photo_url) {
         'INSERT INTO movies (title, year, description, photo_url) VALUES ($1, $2, $3, $4) RETURNING id',
         [title, year, description, photo_url]
     );
-    return result.rows[0]; // Ensure this returns the row with the id
+    return result.rows[0]; 
 }
 
 async function addMovieGenre(movie_id, genre_id) {
@@ -166,13 +266,40 @@ async function deleteMovie(movie_id) {
     await pool.query('DELETE FROM movies WHERE id = $1', [movie_id]);
 }
 
-async function getAllMoviesByGenre(genre_id) {
-    const { rows } = await pool.query(
-        `SELECT * FROM movies m
-         JOIN movie_genres mg ON m.id = mg.movie_id
-         WHERE mg.genre_id = $1`,
-        [genre_id]
-    );
+async function getAllMoviesByGenre(genre_id, sort_by = 'title', order = 'asc', filter) {
+    // const { rows } = await pool.query(
+    //     `SELECT * FROM movies m
+    //      JOIN movie_genres mg ON m.id = mg.movie_id
+    //      WHERE mg.genre_id = $1`,
+    //     [genre_id]
+    // );
+    // return rows;
+    let query = 'SELECT * FROM movies m JOIN movie_genres mg ON m.id = mg.movie_id WHERE mg.genre_id = $1';
+    const queryParams = [genre_id];
+
+    if (filter && filter !== 'all') {
+        query += ' AND year = $2';
+        queryParams.push(filter);
+    }
+
+    const validSortColumns = ['title', 'year'];
+    const validOrder = ['asc', 'desc'];
+
+    if (!validSortColumns.includes(sort_by)) {
+        sort_by = 'title';
+    }
+
+    if (!validOrder.includes(order)) {
+        order = 'asc';
+    }
+
+    if (sort_by === 'title') {
+        query += ` ORDER BY LOWER(title) ${order}`;
+    } else {
+        query += ` ORDER BY ${sort_by} ${order}`;
+    }
+
+    const { rows } = await pool.query(query, queryParams);
     return rows;
 }
 
@@ -260,4 +387,6 @@ module.exports = {
     searchActors,
     searchDirectors,
     searchGenres,
+    getAllYears,
+    getAllYearsByGenre,
 };

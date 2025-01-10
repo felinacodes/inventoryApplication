@@ -18,7 +18,6 @@
     </form>
     <h2>List of movies with directed below: </h2>
     <ul>
-        <% (console.log(movies)); %>
         <% movies && movies.forEach(movie => { %>
             <a href="/movies/<%= movie.movie_id %>">
                 <li>

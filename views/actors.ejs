@@ -24,6 +24,26 @@
         <label for="photo">Photo:</label>
         <input type="file" id="photo" name="photo">
         <button type="submit">Add Actor</button>
+    </form>
+
+    <div>
+        <%- include('sortFilter', { 
+            action: '/actors', 
+            sort_by: sort_by, 
+            order: order, 
+            filter: filter,
+            sortOptions: [
+            { value: 'full_name', text: 'Name' }, 
+            { value: 'birth_date', text: 'Age' },
+            ],
+        filterOptions: [
+            'Male',
+            'Female'
+        ]
+            
+        }) %>
+    </div>
+
     <ul>
         <% actors.forEach(actor => { %>
             <li><%= actor.first_name %> <%= actor.last_name %>

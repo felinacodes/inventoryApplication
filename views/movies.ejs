@@ -27,6 +27,7 @@
   </style>
 
 <script>
+    
     function addItem(inputId, listId, dataListId, inputName) {
         const input = document.getElementById(inputId);
         const list = document.getElementById(listId);
@@ -115,6 +116,23 @@
         <label for="poster">Poster:</label>
         <input type="file" id="poster" name="photo">
         <button type="submit">Add Movie</button>
+        </form>
+        <div>
+            <%- include('sortFilter', { 
+                action: '/movies', 
+                sort_by: sort_by, 
+                order: order, 
+                filter: filter,
+                sortOptions: [
+                    {value: 'title', text:'Title'},
+                    {value: 'year', text: 'Year'}
+                ],
+                filterOptions: years
+                   
+                
+            }) %>
+        </div>
+
     <ul>
         <% movies.forEach(movie => { %>
             <li><%= movie.title %> (<%= movie.year ? movie.year : 'Unkown' %>)
@@ -125,3 +143,5 @@
     </ul>
 </body>
 </html>
+
+

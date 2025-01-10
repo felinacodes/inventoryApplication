@@ -39,8 +39,22 @@ const validateActor = [
 ]
 
 exports.getAllActors = async(req, res) => {
-    const actors = await db.getAllActors();
-    res.render("actors", { actors: actors });
+    const { sort_by = 'first_name', order = 'asc', filter } = req.query;
+    const actors = await db.getAllActors(sort_by, order, filter);
+    res.render("actors", { 
+        actors, 
+        sort_by, 
+        order, 
+        filter,
+        sortOptions: [
+            { value: 'first_name', text: 'First Name' },
+            { value: 'birth_date', text: 'Birth Date' },
+        ],
+        filterOptions: [
+            'Male',
+            'Female'
+        ]
+    });
 }
 
 exports.getActorById = async(req, res) => {
@@ -61,7 +75,18 @@ exports.createActor = [
             return res.status(400).render("actors",
                 {
                     actors: actors,
-                    errors: errors.array()
+                    errors: errors.array(),
+                    sort_by: 'first_name',
+                    order: 'asc',
+                    filter: 'all',
+                    sortOptions: [
+                        { value: 'first_name', text: 'First Name' },
+                        { value: 'birth_date', text: 'Birth Date' },
+                    ],
+                    filterOptions: [
+                        'Male',
+                        'Female',
+                    ]
                 });
         }
         const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
@@ -73,7 +98,8 @@ exports.createActor = [
             birth_date || null,
             photoUrl
         );
-        res.redirect("/actors");
+        
+        res.redirect(`/actors?sort_by=first_name&order=asc&filter=all`);
     }
 ]
 

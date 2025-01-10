@@ -17,14 +17,36 @@ exports.getAllCategories = async(req, res) => {
     res.render("genres", { genres: genres });
 }
 
-exports.getCategoryById = async(req, res) => {
+exports.getCategoryById = async(req, res, next) => {
+    const { sort_by = 'title', order = 'asc', filter } = req.query;
     const genre = await db.getCategoryById(req.params.id);
-    const movies = await db.getAllMoviesByGenre(req.params.id);
-    res.render("genre", { 
-        genre: genre,
-        movies: movies 
-    });
-}
+    req.genreId = genre;
+    const movies = await db.getAllMoviesByGenre(req.params.id, sort_by, order, filter);
+    // res.render("genre", { 
+    //     genre: genre,
+    //     movies: movies 
+    // });
+    req.moviesData = 
+        { movies: movies,
+          genre: genre,
+          sort_by: req.query.sort_by,
+          order: req.query.order,
+          filter: req.query.filter,
+                }
+    next();
+};
+
+exports.getAllYears = async (req, res, next) => {
+    // const years = await db.getAllYears();
+  //  const yearsByGenre = req.years;
+    const years = await db.getAllYearsByGenre(req.genreId.id);
+    req.moviesData.years = years;
+    next();
+};
+
+exports.renderMoviesPage = (req, res) => {
+    res.render("genre", req.moviesData);
+};
 
 
 exports.createCategory = [

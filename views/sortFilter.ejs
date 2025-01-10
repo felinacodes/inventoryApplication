@@ -1,0 +1,26 @@
+<!-- <script>
+    console.log('Rendering sort-filter-form partial');
+</script> -->
+
+
+    <form id="sort-filter-form" method="GET" action="<%= action %>">
+        <label for="sort_by">Sort by:</label>
+        <select name="sort_by" id="sort_by" onchange="this.form.submit()">
+            <% sortOptions.forEach((option, index) => { %>
+                <option value="<%= option.value %>" <%= sort_by === option.value|| (!sort_by && index === 0) ? 'selected' : '' %>><%= option.text %></option>
+            <% }) %>
+        </select> 
+        <label for="order">Order:</label>
+        <select name="order" id="order" onchange="this.form.submit()"">
+            <option value="asc" <%= order === 'asc' ? 'selected' : '' %>>Ascending</option>
+            <option value="desc" <%= order === 'desc' ? 'selected' : '' %>>Descending</option>
+        </select>
+        <label for="filter">Filter:</label>
+        <select name="filter" id="filter" onchange="this.form.submit()">
+            <option value="all" <%= filter === 'all' ? 'selected' : '' %>>All</option>
+            <% filterOptions.forEach(option => { %>
+                <option value="<%= option %>" <%= filter === option.toString() ? 'selected' : '' %>><%= option %></option>
+                <% }) %>
+          </select>
+    </form>
+

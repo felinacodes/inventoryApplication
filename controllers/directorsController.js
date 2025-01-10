@@ -39,9 +39,22 @@ const validateDirector = [
 ]
 
 exports.getAllDirectors = async(req, res) => {
-    const directors = await db.getAllDirectors();
-    //console.log(directors);
-    res.render("directors", { directors: directors });
+    const { sort_by = 'first_name', order = 'asc', filter } = req.query;
+    const directors = await db.getAllDirectors(sort_by, order, filter);
+    res.render("directors", { 
+        directors: directors,
+        sort_by,
+        order,
+        filter,
+        sortOptions: [
+            { value: 'first_name', text: 'First Name' },
+            { value: 'birth_date', text: 'Birth Date' },
+        ],
+        filterOptions: [
+            'Male',
+            'Female',
+        ]
+    });
 }
 
 exports.getDirectorById = async(req, res) => {
@@ -62,7 +75,18 @@ exports.createDirector = [
             return res.status(400).render("directors",
                 {
                     directors: directors,
-                    errors: errors.array()
+                    errors: errors.array(),
+                    sort_by: 'first_name',
+                    order: 'asc',
+                    filter: 'all',
+                    sortOptions: [
+                        { value: 'first_name', text: 'First Name' },
+                        { value: 'birth_date', text: 'Birth Date' },
+                    ],
+                    filterOptions: [
+                        'Male',
+                        'Female',
+                    ]
                 });
         }
         const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;

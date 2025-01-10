@@ -28,18 +28,34 @@ const validateMovie = [
 ]
 
 
-exports.getAllMovies =async (req, res) => {    
-    const movies = await db.getAllMovies();
+exports.getAllMovies =async (req, res, next) => {    
+    const { sort_by = 'title', order = 'asc', filter } = req.query;
+    const movies = await db.getAllMovies(sort_by, order, filter);
     const genres = await db.getAllCategories();
     const directors = await db.getAllDirectors();
     const actors = await db.getAllActors();
-    res.render("movies",
-         { movies: movies,
-           directors: directors,
-           actors: actors,
-           genres: genres }
-        );
+    req.moviesData = 
+        { movies: movies,
+          directors: directors,
+          actors: actors,
+          genres: genres,
+          sort_by: req.query.sort_by,
+          order: req.query.order,
+          filter: req.query.filter,
+                }
+    next();
 };
+
+exports.getAllYears = async (req, res, next) => {
+    const years = await db.getAllYears();
+    req.moviesData.years = years;
+    next();
+};
+
+exports.renderMoviesPage = (req, res) => {
+    res.render("movies", req.moviesData);
+};
+
 
 exports.getMovieById = async(req, res) => {            
     const movie = await db.getMovieById(req.params.id);
@@ -66,12 +82,22 @@ exports.createMovie = [
             const genres = await db.getAllCategories();
             const directors = await db.getAllDirectors();
             const actors = await db.getAllActors();
-            return res.status(400).render("movies", {
-                movies: movies,
-                genres: genres,
-                directors: directors,
-                actors: actors,
-                errors: errors.array()
+            const years = await db.getAllYears();
+
+            return res.render('movies', {
+                errors: errors.array(),
+                genres,
+                directors,
+                actors,
+                movies,
+                sort_by: 'title',
+                order: 'asc',
+                filter: 'all',
+                sortOptions: [
+                    { value: 'title', text: 'Title' },
+                    { value: 'year', text: 'Year' }
+                ],
+                years, 
             });
         }
         const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
