@@ -35,6 +35,14 @@ const validateDirector = [
                 throw new Error("Birth date must be after 1900-01-01");
             }
             return true;
+        }),
+        body("death_date").optional({ checkFalsy: true }).isDate().withMessage("Invalid date format")
+        .custom((value) => {
+            const currentDate = new Date().toISOString().split('T')[0];
+            if (value > currentDate) {
+                throw new Error("Death date cannot be in the future");
+            }
+            return true;
         })
 ]
 
