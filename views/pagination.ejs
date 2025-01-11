@@ -1,0 +1,11 @@
+<div class="pagination">
+    <% if (page > 1) { %>
+        <a href="<%= action %>?page=1&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>">First</a>
+        <a href="<%= action %>?page=<%= page - 1 %>&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>">Previous</a>
+    <% } %>
+    <span>Page <%= page %></span>
+    <% if (page < Math.ceil(totalItems / pageSize)) { %>
+        <a href="<%= action %>?page=<%= page + 1 %>&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>">Next</a>
+        <a href="<%= action %>?page=<%= Math.ceil(totalItems / pageSize) %>&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>">Last</a>
+    <% } %>
+</div>

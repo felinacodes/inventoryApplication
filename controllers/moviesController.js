@@ -29,8 +29,11 @@ const validateMovie = [
 
 
 exports.getAllMovies =async (req, res, next) => {    
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
     const { sort_by = 'title', order = 'asc', filter } = req.query;
-    const movies = await db.getAllMovies(sort_by, order, filter);
+    const movies = await db.getAllMovies(sort_by, order, filter, page, pageSize);
+    const totalMovies = await db.getMoviescount(filter);
     const genres = await db.getAllCategories();
     const directors = await db.getAllDirectors();
     const actors = await db.getAllActors();
@@ -42,6 +45,9 @@ exports.getAllMovies =async (req, res, next) => {
           sort_by: req.query.sort_by,
           order: req.query.order,
           filter: req.query.filter,
+          page: page,
+          pageSize: pageSize,
+          totalMovies: totalMovies
                 }
     next();
 };
@@ -77,6 +83,10 @@ exports.createMovie = [
     validateMovie,
     async(req, res) => {
         const errors = validationResult(req);
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const totalMovies = await db.getMoviescount(req.body.filter);
+
         if (!errors.isEmpty()) {
             const movies = await db.getAllMovies();
             const genres = await db.getAllCategories();
@@ -98,6 +108,9 @@ exports.createMovie = [
                     { value: 'year', text: 'Year' }
                 ],
                 years, 
+                page,
+                pageSize,
+                totalMovies,
             });
         }
         const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;

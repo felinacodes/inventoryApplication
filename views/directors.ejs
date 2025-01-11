@@ -55,6 +55,16 @@
                 <a href="/directors/<%= director.id %>">View</a>
             </li>
         <% }) %>
+
+        <%- include('pagination', {
+            action: '/directors',
+            page: page,
+            pageSize: pageSize,
+            sort_by: sort_by,
+            order: order,
+            filter: filter,
+            totalItems: totalDirectors
+        }) %>
     </ul>
 </body>
 </html>

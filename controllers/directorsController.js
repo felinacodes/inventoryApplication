@@ -39,8 +39,12 @@ const validateDirector = [
 ]
 
 exports.getAllDirectors = async(req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+
     const { sort_by = 'first_name', order = 'asc', filter } = req.query;
-    const directors = await db.getAllDirectors(sort_by, order, filter);
+    const directors = await db.getAllDirectors(sort_by, order, filter, page, pageSize);
+    const totalDirectors = await db.getDirectorsCount(filter);
     res.render("directors", { 
         directors: directors,
         sort_by,
@@ -53,7 +57,10 @@ exports.getAllDirectors = async(req, res) => {
         filterOptions: [
             'Male',
             'Female',
-        ]
+        ],
+        page,
+        pageSize,
+        totalDirectors,
     });
 }
 
@@ -69,7 +76,10 @@ exports.getDirectorById = async(req, res) => {
 exports.createDirector = [
     validateDirector,
     async(req, res) => {
-        const errors = validationResult(req);
+         const errors = validationResult(req);
+         const page = parseInt(req.query.page) || 1;
+         const pageSize = parseInt(req.query.pageSize) || 10;
+         const totalDirectors = await db.getDirectorsCount(req.body.filter);
         if (!errors.isEmpty()) {
             const directors = await db.getAllDirectors();
             return res.status(400).render("directors",
@@ -86,7 +96,10 @@ exports.createDirector = [
                     filterOptions: [
                         'Male',
                         'Female',
-                    ]
+                    ],
+                    page,
+                    pageSize,
+                    totalDirectors,
                 });
         }
         const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;

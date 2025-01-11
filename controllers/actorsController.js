@@ -39,8 +39,15 @@ const validateActor = [
 ]
 
 exports.getAllActors = async(req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+
     const { sort_by = 'first_name', order = 'asc', filter } = req.query;
-    const actors = await db.getAllActors(sort_by, order, filter);
+    const actors = await db.getAllActors(sort_by, order, filter, page, pageSize);
+
+  
+    const totalActors = await db.getActorsCount(filter);
+
     res.render("actors", { 
         actors, 
         sort_by, 
@@ -53,7 +60,10 @@ exports.getAllActors = async(req, res) => {
         filterOptions: [
             'Male',
             'Female'
-        ]
+        ],
+        page,
+        pageSize,
+        totalActors,
     });
 }
 
@@ -69,7 +79,10 @@ exports.getActorById = async(req, res) => {
 exports.createActor = [
     validateActor,
     async(req, res) => {
-        const errors = validationResult(req);
+         const errors = validationResult(req);
+         const page = parseInt(req.query.page) || 1;
+         const pageSize = parseInt(req.query.pageSize) || 10;
+         const totalActors = await db.getActorsCount(req.body.filter);
         if (!errors.isEmpty()) {
             const actors = await db.getAllActors();
             return res.status(400).render("actors",
@@ -86,7 +99,10 @@ exports.createActor = [
                     filterOptions: [
                         'Male',
                         'Female',
-                    ]
+                    ],
+                    page,
+                    pageSize,
+                    totalActors,
                 });
         }
         const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;

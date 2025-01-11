@@ -57,5 +57,16 @@
             </li>
         <% }) %>
     </ul>
+
+    <%- include('pagination', {
+        action: '/actors',
+        page: page,
+        pageSize: pageSize,
+        sort_by: sort_by,
+        order: order,
+        filter: filter,
+        totalItems: totalActors
+    }) %>
+
 </body>
 </html>

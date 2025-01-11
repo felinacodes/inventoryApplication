@@ -141,6 +141,15 @@
             </li>
         <% }) %>
     </ul>
+    <%- include('pagination', {
+        action: '/movies',
+        page: page,
+        pageSize: pageSize,
+        sort_by: sort_by,
+        order: order,
+        filter: filter,
+        totalItems: totalMovies
+    }) %>
 </body>
 </html>
 

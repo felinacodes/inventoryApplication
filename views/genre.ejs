@@ -37,6 +37,17 @@
                 </li>
             </a>
         <% }) %>
+
+        <%- include('pagination', {
+            action: `/categories/${genre.id}`,
+            page: page,
+            pageSize: pageSize,
+            sort_by: sort_by,
+            order: order,
+            filter: filter,
+            totalItems: totalMovies
+        }) %>
+
     </ul>
 </body>
 </html>
