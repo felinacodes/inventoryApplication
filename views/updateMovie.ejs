@@ -104,7 +104,7 @@
     <%- include('navbar', {links: links}) %>
     <h1>Update Movie</h1>
     <%- include('errors') %>
-    <form action="/movies/<%= movie.id %>/update" method="POST" enctype="multipart/form-data">
+    <form id="updateForm" action="/movies/<%= movie.id %>/update" method="POST" enctype="multipart/form-data">
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" value="<%= movie.title %>">
         <label for="year">Year:</label>
@@ -150,9 +150,11 @@
         height="100"
         />
         <input type="file" id="photo" name="photo">
-        <button type="submit">Update Movie</button>
-    </form>
+        <!-- <button type="submit">Update Movie</button> -->
+        <button type="button" onclick="showPasswordPrompt()">Update Movie</button>
+        <%- include('passwordPrompt') %>
 
+    </form>
     <script>
         const photoInput = document.getElementById('photo');
         const photoPreview = document.getElementById('photoPreview');
@@ -170,6 +172,11 @@
                 photoPreview.src = '<%= movie.photo_url || "/images/default.jpg" %>';
             }
         });
+
+        function showPasswordPrompt() {
+        document.getElementById('passwordPrompt').style.display = 'block';
+    }
+
     </script>
 </body>
 </html>

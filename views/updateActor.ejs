@@ -33,7 +33,8 @@
         height="100"
         />
         <input type="file" id="photo" name="photo">
-        <button type="submit">Update Actor</button>
+        <button type="button" onclick="showPasswordPrompt()">Update Movie</button>
+        <%- include('passwordPrompt') %>
     </form>
 
     <script>
@@ -53,6 +54,10 @@
                 photoPreview.src = '<%= actor.photo_url || "/images/default.jpg" %>';
             }
         });
+
+        function showPasswordPrompt() {
+        document.getElementById('passwordPrompt').style.display = 'block';
+    }
     </script>
 </body>
 </html>

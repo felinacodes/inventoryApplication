@@ -8,7 +8,6 @@ const actorsRouter = require("./routes/actorsRouter");
 const directorsRouter = require("./routes/directorsRouter");
 const path = require("path");
 
-
 const links = [
     { text: "home", href: "/" },
     { text: "categories", href: "/categories" },
@@ -17,14 +16,12 @@ const links = [
     { text: "directors", href: "/directors" }, 
 ];
 
+
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-// app.use(express.static(path.join(__dirname, "public")));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-
 
 app.use((req, res, next) => {
     res.locals.links = links;
@@ -43,14 +40,13 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
+module.exports = app;
 
-//TODO 
 /*
-1. add pagination.
-2. handle errors everywhere.
-3. secure update/delete.
-4. style.
-5. add documentation.
-6. deploy.
+TODO: //
+! 1.fix bug not showing all options on update datalist.
+* 2. fix errors everywhere.
+* 3. Style.
+? 4. Add documentation.
+! 5. Deploy.
 */
-

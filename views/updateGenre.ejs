@@ -12,7 +12,14 @@
     <form action="/categories/<%= genre.id %>/update" method="POST">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" value="<%= genre.name %>">
-        <button type="submit">Update Genre</button>
+        <!-- <button type="submit">Update Genre</button> -->
+        <button type="button" onclick="showPasswordPrompt()">Update Genre</button>
+        <%- include('passwordPrompt') %>
     </form>
+<script>
+    function showPasswordPrompt() {
+        document.getElementById('passwordPrompt').style.display = 'block';
+    }
+</script>
 </body>
 </html>

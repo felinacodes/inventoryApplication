@@ -14,7 +14,8 @@
     <img src="<%= actor.photo_url ? actor.photo_url : '/public/images/default.jpg' %>" alt="actor photo" style="width: 100px; height: 100px;">
     <a href="/actors/<%= actor.id %>/update">Update</a>
     <form action="/actors/<%= actor.id %>/delete" method="POST">
-        <button type="submit">Delete</button>
+        <button type="button" onclick="showPasswordPrompt()">Delete</button>
+        <%- include('passwordPrompt') %>
     </form>
     <h2>List of movies with this actor below: </h2>
     <ul>
@@ -27,5 +28,12 @@
             </a>
         <% }) %>
     </ul>
+
+    <script>
+        function showPasswordPrompt() {
+       document.getElementById('passwordPrompt').style.display = 'block';
+   }
+
+   </script>
 </body>
 </html>

@@ -235,6 +235,7 @@ exports.updateMoviePost = [
 ];
 
 exports.deleteMovie = async(req, res) => {
+    console.log('on delete');
     const movie = await db.getMovieById(req.params.id);
     if (movie.photo_url) {
         deleteFile(movie.photo_url);
@@ -247,3 +248,5 @@ exports.deleteMovie = async(req, res) => {
 
     res.redirect("/movies");
 };
+
+

@@ -9,8 +9,13 @@
     <%- include('navbar', {links: links}) %>
     <h1> <%= genre.name %></h1>
     <a href="/categories/<%= genre.id %>/update">Update</a>
+    
+        <!-- <button type="submit">Update</button> -->
+
     <form action="/categories/<%= genre.id %>/delete" method="POST">
-        <button type="submit">Delete</button>
+        <!-- <button type="submit">Delete</button> -->
+            <button type="button" onclick="showPasswordPrompt()">Delete</button>
+        <%- include('passwordPrompt') %>
     </form>
     <h2>List of movies with this genre below: </h2>
 
@@ -49,5 +54,11 @@
         }) %>
 
     </ul>
+
+    <script>
+        function showPasswordPrompt() {
+            document.getElementById('passwordPrompt').style.display = 'block';
+        }
+    </script>
 </body>
 </html>

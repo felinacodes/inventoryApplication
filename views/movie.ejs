@@ -33,6 +33,15 @@
 
     <a href="/movies/<%= movie.id %>/update">Update</a>
     <form action="/movies/<%= movie.id %>/delete" method="POST">
-        <button type="submit">Delete</button>
+        <!-- <button type="submit">Delete</button> -->
+         <button type="button" onclick="showPasswordPrompt()">Delete</button>
+        <%- include('passwordPrompt') %>
+    </form>
+    <script>
+         function showPasswordPrompt() {
+        document.getElementById('passwordPrompt').style.display = 'block';
+    }
+
+    </script>
 </body>
 </html>
