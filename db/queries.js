@@ -419,6 +419,20 @@ async function searchGenres(query) {
     return rows;
 }
 
+async function getCompleteGenresList() {
+    const { rows } = await pool.query('SELECT * FROM genres');
+    return rows;
+};
+
+async function getCompleteActorsList() {
+    const { rows } = await pool.query('SELECT * FROM actors');
+    return rows;
+};
+
+async function getCompleteDirectorsList() {
+    const { rows } = await pool.query('SELECT * FROM directors');
+    return rows;
+};
 
 module.exports = {
     getAllCategories,
@@ -463,4 +477,7 @@ module.exports = {
     getActorsCount, 
     getDirectorsCount,
     getMoviesCountByGenre,
+    getCompleteGenresList,
+    getCompleteActorsList,
+    getCompleteDirectorsList,
 };

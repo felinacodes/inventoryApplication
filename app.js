@@ -44,9 +44,9 @@ module.exports = app;
 
 /*
 TODO: //
-! 1.fix bug not showing all options on update datalist.
-* 2. fix errors everywhere.
-* 3. Style.
+* 1. fix errors everywhere.
+* 2. Style.
+? 3. Fix db false info. 
 ? 4. Add documentation.
 ! 5. Deploy.
 */

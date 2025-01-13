@@ -34,9 +34,10 @@ exports.getAllMovies =async (req, res, next) => {
     const { sort_by = 'title', order = 'asc', filter } = req.query;
     const movies = await db.getAllMovies(sort_by, order, filter, page, pageSize);
     const totalMovies = await db.getMoviescount(filter);
-    const genres = await db.getAllCategories();
-    const directors = await db.getAllDirectors();
-    const actors = await db.getAllActors();
+
+    const genres = await db.getCompleteGenresList();
+    const directors = await db.getCompleteDirectorsList();
+    const actors = await db.getCompleteActorsList();
     req.moviesData = 
         { movies: movies,
           directors: directors,
@@ -155,9 +156,12 @@ exports.updateMovieGet = async(req, res) => {
     const MovieGenres = await db.getMovieGenres(req.params.id);
     const MovieDirectors = await db.getMovieDirectors(req.params.id);
     const MovieActors = await db.getMovieActors(req.params.id);
-    const genres = await db.getAllCategories();
-    const directors = await db.getAllDirectors();
-    const actors = await db.getAllActors();
+    // const genres = await db.getAllCategories();
+    // const directors = await db.getAllDirectors();
+    // const actors = await db.getAllActors();
+    const genres = await db.getCompleteGenresList();
+    const directors = await db.getCompleteDirectorsList();
+    const actors = await db.getCompleteActorsList();
     res.render("updateMovie", { 
         movie: movie,
         genres: genres,
@@ -172,6 +176,7 @@ exports.updateMovieGet = async(req, res) => {
 exports.updateMoviePost = [
     validateMovie,
     async(req,res) => {
+        console.log('wtf');
         const movie = await db.getMovieById(req.params.id);
         const MovieGenres = await db.getMovieGenres(req.params.id);
         const MovieDirectors = await db.getMovieDirectors(req.params.id);
