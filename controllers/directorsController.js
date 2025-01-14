@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
 const fs = require("fs");
 const path = require("path");
+const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
 
 
 const alphaErr = "Must only contain letters.";
@@ -18,7 +19,7 @@ function deleteFile(filePath) {
     });
 }
 
-const validateDirector = [
+exports.validateDirector = [
     body("f_name").trim().escape()
         .isAlpha().withMessage(alphaErr)
         .isLength({ min: 1, max: 20 }).withMessage(lengthErr),
@@ -72,8 +73,11 @@ exports.getAllDirectors = async(req, res) => {
     });
 }
 
-exports.getDirectorById = async(req, res) => {
+exports.getDirectorById = async(req, res, next) => {
     const director = await db.getDirectorById(req.params.id);
+
+    checkDataExistence(director, next);
+
     const movies = await db.getAllMoviesByDirector(req.params.id);
     res.render("director", { 
         director: director,
@@ -81,14 +85,13 @@ exports.getDirectorById = async(req, res) => {
     });
 }
 
-exports.createDirector = [
-    validateDirector,
-    async(req, res) => {
+exports.createDirector = async(req, res) => {
          const errors = validationResult(req);
          const page = parseInt(req.query.page) || 1;
          const pageSize = parseInt(req.query.pageSize) || 10;
          const totalDirectors = await db.getDirectorsCount(req.body.filter);
         if (!errors.isEmpty()) {
+            console.log(errors.array());
             const directors = await db.getAllDirectors();
             return res.status(400).render("directors",
                 {
@@ -121,17 +124,15 @@ exports.createDirector = [
             photoUrl
         );
         res.redirect("/directors");
-    }
-]
+    };
 
-exports.updateDirectorGet = async(req, res) => {
+exports.updateDirectorGet = async(req, res, next) => {
     const director = await db.getDirectorById(req.params.id);
+    checkDataExistence(director, next);
     res.render("updateDirector", { director: director });
 }
 
-exports.updateDirectorPost = [
-    validateDirector,
-    async(req, res) => {
+exports.updateDirectorPost = async(req, res) => {
         const director = await db.getDirectorById(req.params.id);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -141,7 +142,6 @@ exports.updateDirectorPost = [
             });
         }
         let photoUrl = director.photo_url;
-        // const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
         if (req.file) {
             // Delete the old photo if a new one is uploaded
             if (director.photo_url) {
@@ -151,21 +151,13 @@ exports.updateDirectorPost = [
         }
         const { f_name, l_name, gender, birth_date, death_date} = req.body;
 
-        // Validate birth_date and death_date
-        // if (!birth_date && death_date) {
-        //     return res.status(400).render("updateDirector", {
-        //         director: director,
-        //         errors: [{ msg: "Birth date is required if death date is provided." }]
-        //     });
-        // }
-
         await db.updateDirector(req.params.id, f_name, l_name, gender, birth_date ? birth_date : null, death_date ? death_date : null, photoUrl);
         res.redirect(`/directors/${req.params.id}`);
-    }
-];
+    };
 
-exports.deleteDirector = async (req,res) => {
+exports.deleteDirector = async (req,res, next) => {
     const director = await db.getDirectorById(req.params.id);
+    checkDataExistence(director, next);
     if (director.photo_url) {
         deleteFile(director.photo_url);
     }

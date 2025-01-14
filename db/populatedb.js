@@ -1,5 +1,9 @@
 const { Client } = require('pg');
 require('dotenv').config();
+const path = require("path");
+// require('dotenv').config({
+//     path: `.env.${process.env.NODE_ENV || 'development'}`
+// });
 
 const currentDate = new Date().toISOString().split('T')[0];
 

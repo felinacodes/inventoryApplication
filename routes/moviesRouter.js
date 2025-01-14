@@ -1,17 +1,18 @@
 const { Router } = require('express');
 const { getAllMovies, getMovieById, createMovie, 
     updateMovieGet, updateMoviePost, deleteMovie,
-    getAllYears, renderMoviesPage} = require("../controllers/moviesController");
+    getAllYears, renderMoviesPage, validateMovie} = require("../controllers/moviesController");
 const upload = require('./multer');
 const verifyPassword = require('../middleware/verifyPassowrd');
+const asyncHandler = require('express-async-handler');
 
 const moviesRouter = Router();
 
-moviesRouter.get("/", getAllMovies, getAllYears, renderMoviesPage);
-moviesRouter.get("/:id", getMovieById);
-moviesRouter.post("/", upload, createMovie);
-moviesRouter.get("/:id/update", updateMovieGet);
-moviesRouter.post("/:id/update", upload, verifyPassword, updateMoviePost);
-moviesRouter.post("/:id/delete", verifyPassword, deleteMovie);
+moviesRouter.get("/", asyncHandler(getAllMovies), asyncHandler(getAllYears), asyncHandler(renderMoviesPage));
+moviesRouter.get("/:id", asyncHandler(getMovieById));
+moviesRouter.post("/", upload, ...validateMovie, asyncHandler(createMovie));
+moviesRouter.get("/:id/update", asyncHandler(updateMovieGet));
+moviesRouter.post("/:id/update",upload, verifyPassword, asyncHandler(updateMoviePost));
+moviesRouter.post("/:id/delete", verifyPassword, asyncHandler(deleteMovie));
 
 module.exports = moviesRouter;

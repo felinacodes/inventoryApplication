@@ -2,6 +2,7 @@ const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
 const fs = require("fs");
 const path = require("path");
+const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
 
 const lengthErr = "Title must be between 1 and 50 characters.";
 
@@ -18,7 +19,7 @@ function deleteFile(filePath) {
     });
 }
 
-const validateMovie = [
+exports.validateMovie = [
     body("title").trim().escape()
         .isLength({ min: 1, max: 50 }).withMessage(lengthErr),
     body("year")
@@ -28,29 +29,38 @@ const validateMovie = [
 ]
 
 
-exports.getAllMovies =async (req, res, next) => {    
-    const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 10;
-    const { sort_by = 'title', order = 'asc', filter } = req.query;
-    const movies = await db.getAllMovies(sort_by, order, filter, page, pageSize);
-    const totalMovies = await db.getMoviescount(filter);
+exports.getAllMovies = async (req, res, next) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 10;
+        const { sort_by = 'title', order = 'asc', filter } = req.query;
 
-    const genres = await db.getCompleteGenresList();
-    const directors = await db.getCompleteDirectorsList();
-    const actors = await db.getCompleteActorsList();
-    req.moviesData = 
-        { movies: movies,
-          directors: directors,
-          actors: actors,
-          genres: genres,
-          sort_by: req.query.sort_by,
-          order: req.query.order,
-          filter: req.query.filter,
-          page: page,
-          pageSize: pageSize,
-          totalMovies: totalMovies
-                }
-    next();
+        const movies = await db.getAllMovies(sort_by, order, filter, page, pageSize);
+
+        const totalMovies = await db.getMoviescount(filter);
+
+        const genres = await db.getCompleteGenresList();
+        const directors = await db.getCompleteDirectorsList();
+        const actors = await db.getCompleteActorsList();
+
+        // checkDataExistence(movies, genres, directors, actors, totalMovies, next);
+
+        req.moviesData = {
+            movies,
+            directors,
+            actors,
+            genres,
+            sort_by,
+            order,
+            filter,
+            page,
+            pageSize,
+            totalMovies,
+        };
+        next();
+    } catch (error) {
+        handleDatabaseError(error, next);
+    }
 };
 
 exports.getAllYears = async (req, res, next) => {
@@ -64,11 +74,14 @@ exports.renderMoviesPage = (req, res) => {
 };
 
 
-exports.getMovieById = async(req, res) => {            
+exports.getMovieById = async(req, res, next) => {            
     const movie = await db.getMovieById(req.params.id);
     const genres = await db.getMovieGenres(req.params.id);
     const actors = await db.getMovieActors(req.params.id);
     const directors = await db.getMovieDirectors(req.params.id);
+
+    checkDataExistence(movie, next);
+
     res.render("movie", 
         { 
             movie: movie,
@@ -80,9 +93,7 @@ exports.getMovieById = async(req, res) => {
 
 
 
-exports.createMovie = [
-    validateMovie,
-    async(req, res) => {
+exports.createMovie = async(req, res, next) => {
         const errors = validationResult(req);
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 10;
@@ -148,20 +159,20 @@ exports.createMovie = [
             }
         }
         res.redirect("/movies");
-    }
-];
+    };
 
-exports.updateMovieGet = async(req, res) => {
+exports.updateMovieGet = async(req, res, next) => {
     const movie = await db.getMovieById(req.params.id);
     const MovieGenres = await db.getMovieGenres(req.params.id);
     const MovieDirectors = await db.getMovieDirectors(req.params.id);
     const MovieActors = await db.getMovieActors(req.params.id);
-    // const genres = await db.getAllCategories();
-    // const directors = await db.getAllDirectors();
-    // const actors = await db.getAllActors();
+
     const genres = await db.getCompleteGenresList();
     const directors = await db.getCompleteDirectorsList();
     const actors = await db.getCompleteActorsList();
+
+    checkDataExistence(movie, next);
+
     res.render("updateMovie", { 
         movie: movie,
         genres: genres,
@@ -173,10 +184,7 @@ exports.updateMovieGet = async(req, res) => {
     });
 };
 
-exports.updateMoviePost = [
-    validateMovie,
-    async(req,res) => {
-        console.log('wtf');
+exports.updateMoviePost = async(req,res) => {
         const movie = await db.getMovieById(req.params.id);
         const MovieGenres = await db.getMovieGenres(req.params.id);
         const MovieDirectors = await db.getMovieDirectors(req.params.id);
@@ -203,15 +211,13 @@ exports.updateMoviePost = [
             deleteFile(photoUrl);
             photoUrl = `/public/uploads/${req.file.filename}`;
         }
-           // photoUrl = `/public/uploads/${req.file.filename}`;
-        //const movie = movies.find(movie => movie.id == req.params.id);
         const { title, year, description, genre, actors, directors } = req.body;
         await db.updateMovie(req.params.id, title, year, description, photoUrl);
-        // Update genres associations
 
          if (!movie) {
             throw new Error('Failed to retrieve movie ID after insertion.');
         }
+
         await db.deleteMovieGenres(req.params.id);
         await db.deleteMovieActors(req.params.id);
         await db.deleteMovieDirectors(req.params.id);
@@ -236,15 +242,16 @@ exports.updateMoviePost = [
             }
         }
         res.redirect(`/movies/${req.params.id}`);
-    }
-];
+    };
 
-exports.deleteMovie = async(req, res) => {
-    console.log('on delete');
+exports.deleteMovie = async(req, res, next) => {
     const movie = await db.getMovieById(req.params.id);
     if (movie.photo_url) {
         deleteFile(movie.photo_url);
     }
+
+    checkDataExistence(movie, next);
+
     await db.deleteMovieGenres(req.params.id);
     await db.deleteMovieActors(req.params.id);
     await db.deleteMovieDirectors(req.params.id);

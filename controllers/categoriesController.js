@@ -1,11 +1,12 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
+const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
 
 const alphaErr = "Must only contain letters.";
 const lengthErr = "Must be between 1 and 20 characters.";
 
-const validateCategory = [
+exports.validateCategory = [
     body("name").trim().escape()
         .isAlpha().withMessage(alphaErr)
         .isLength({ min: 1, max: 20 }).withMessage(lengthErr)
@@ -24,6 +25,9 @@ exports.getCategoryById = async(req, res, next) => {
     const { sort_by = 'title', order = 'asc', filter } = req.query;
     const genre = await db.getCategoryById(req.params.id);
     req.genreId = genre;
+
+    checkDataExistence(genre, next);
+
     const movies = await db.getAllMoviesByGenre(req.params.id, sort_by, order, filter, page, pageSize);
     const totalMovies = await db.getMoviesCountByGenre(genre.id, filter);
     req.moviesData = 
@@ -51,9 +55,7 @@ exports.renderMoviesPage = (req, res) => {
 };
 
 
-exports.createCategory = [
-    validateCategory,
-    async(req, res) => {
+exports.createCategory = async(req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             const genres = await db.getAllCategories();
@@ -66,17 +68,18 @@ exports.createCategory = [
         await db.addCategory(req.body.name);
         res.redirect("/categories");
     }
-]
 
-exports.updateCategoryGet = async(req, res) => {
+
+exports.updateCategoryGet = async(req, res, next) => {
     const genre = await db.getCategoryById(req.params.id);
+
+    checkDataExistence(genre, next);
+
     res.render("updateGenre", 
         { genre: genre });
 }
 
-exports.updateCategoryPost = [
-    validateCategory,
-    async(req, res) => {
+exports.updateCategoryPost = async(req, res) => {
         const genre = await db.getCategoryById(req.params.id);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -87,11 +90,11 @@ exports.updateCategoryPost = [
         }
       await db.updateCategory(req.params.id, req.body.name);
        res.redirect(`/categories/${req.params.id}`);
-    }
-    ];
+    };
 
-exports.deleteCategory = async(req, res) => {
+exports.deleteCategory = async(req, res, next) => {
     await db.deleteCategory(req.params.id);
+    checkDataExistence(movie, next);
     res.redirect("/categories");
 }
     

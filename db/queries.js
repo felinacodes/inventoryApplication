@@ -434,6 +434,10 @@ async function getCompleteDirectorsList() {
     return rows;
 };
 
+async function test() {
+    // return null;
+};
+
 module.exports = {
     getAllCategories,
     addCategory,
@@ -480,4 +484,5 @@ module.exports = {
     getCompleteGenresList,
     getCompleteActorsList,
     getCompleteDirectorsList,
+    test,
 };

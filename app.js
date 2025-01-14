@@ -7,6 +7,14 @@ const searchRouter = require("./routes/searchRouter");
 const actorsRouter = require("./routes/actorsRouter");
 const directorsRouter = require("./routes/directorsRouter");
 const path = require("path");
+const errorHandler = require("./middleware/errorHandling");
+const { 
+    CustomError, 
+    CustomNotFoundError, 
+    CustomValidationError, 
+    CustomUnauthorizedError 
+} = require('./middleware/errorHandling');
+require('dotenv').config(); // remove ? 
 
 const links = [
     { text: "home", href: "/" },
@@ -35,18 +43,40 @@ app.use("/actors", actorsRouter);
 app.use("/directors", directorsRouter);
 app.use("/", indexRouter);
 
+app.use((req, res, next) => {
+    next(new CustomNotFoundError("Page not found."));
+});
+
+app.use((err, req, res, next) => {
+    // console.log(err);
+  //  console.log(err);
+    const responseMessage = process.env.NODE_ENV === 'development' ? err.message : 'An error occurred.';
+    if (err instanceof CustomError) {
+        console.log(process.env.NODE_ENV);
+        // const responseMessage = process.env.NODE_ENV === 'development' ? err.message : 'An error occurred.';
+        return res.status(err.statusCode).json({message: responseMessage});
+    }
+    if (err instanceof CustomNotFoundError) {
+        return res.status(err.statusCode).json({message: responseMessage});
+    }
+
+    res.status(500).json({ message: 'Internal Server Error' });
+});
+
 const PORT = process.env.APP_PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
+
 module.exports = app;
 
 /*
 TODO: //
-* 1. fix errors everywhere.
-* 2. Style.
-? 3. Fix db false info. 
-? 4. Add documentation.
-! 5. Deploy.
+! 1. Validation. 
+? 2. Move files in correct folders.
+* 3. Style.
+? 4. Fix db false info. 
+? 5. Add documentation.
+! 6. Deploy.
 */

@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
 const fs = require("fs");
 const path = require("path");
+const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
 
 
 const alphaErr = "Must only contain letters.";
@@ -18,7 +19,7 @@ function deleteFile(filePath) {
     });
 }
 
-const validateActor = [
+exports.validateActor = [
     body("f_name").trim().escape()
         .isAlpha().withMessage(alphaErr)
         .isLength({ min: 1, max: 20 }).withMessage(lengthErr),
@@ -75,18 +76,20 @@ exports.getAllActors = async(req, res) => {
     });
 }
 
-exports.getActorById = async(req, res) => {
+exports.getActorById = async(req, res, next) => {
     const actor = await db.getActorById(req.params.id);
     const movies = await db.getAllMoviesByActor(req.params.id);
+
+    checkDataExistence(actor, next);
+
     res.render("actor", { 
         actor: actor,
         movies: movies
     });
+
 }
 
-exports.createActor = [
-    validateActor,
-    async(req, res) => {
+exports.createActor = async(req, res) => {
          const errors = validationResult(req);
          const page = parseInt(req.query.page) || 1;
          const pageSize = parseInt(req.query.pageSize) || 10;
@@ -124,18 +127,18 @@ exports.createActor = [
             death_date || null
         );
         res.redirect(`/actors`);
-    }
-]
+    };
 
-exports.updateActorGet = async(req, res) => {
+exports.updateActorGet = async(req, res, next) => {
     const actor = await db.getActorById(req.params.id);
+
+    checkDataExistence(actor, next);
+
     res.render("updateActor",
         {actor: actor});
 }
 
-exports.updateActorPost = [
-    validateActor,
-    async(req, res) => {
+exports.updateActorPost = async(req, res) => {
         const actor = await db.getActorById(req.params.id);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -145,7 +148,6 @@ exports.updateActorPost = [
             });
         }
         let photoUrl = actor.photo_url;
-        // const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
         if (req.file) {
             // Delete the old photo if a new one is uploaded
             if (actor.photo_url) {
@@ -156,14 +158,15 @@ exports.updateActorPost = [
         const { f_name, l_name, gender, birth_date, death_date} = req.body;
         await db.updateActor(req.params.id, f_name, l_name, gender, birth_date ? birth_date : null, death_date ? death_date : null, photoUrl);
         res.redirect(`/actors/${req.params.id}`);
-    }
-];
+    };
 
 exports.deleteActor = async (req,res) => {
     const actor = await db.getActorById(req.params.id);
     if (actor.photo_url) {
         deleteFile(actor.photo_url);
     }
+    checkDataExistence(movie, next);
+    
     await db.deleteActor(req.params.id);
     res.redirect("/actors");
 };
