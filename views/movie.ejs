@@ -6,7 +6,7 @@
     <title>Movie</title>
 </head>
 <body>
-    <%- include('navbar', {links: links}) %>
+    <%- include('partials/navbar', {links: links}) %>
     <h1> <%= movie.title %></h1>
     <h5> <%= movie.year ? movie.year : 'Unkown' %></h5>
     <img src="<%= movie.photo_url ? movie.photo_url : '/public/images/default.jpg' %>" alt="movie poster" style="width: 100px; height: 100px;">
@@ -35,7 +35,7 @@
     <form action="/movies/<%= movie.id %>/delete" method="POST">
         <!-- <button type="submit">Delete</button> -->
          <button type="button" onclick="showPasswordPrompt()">Delete</button>
-        <%- include('passwordPrompt') %>
+         <%- include('partials/passwordPrompt') %>
     </form>
     <script>
          function showPasswordPrompt() {

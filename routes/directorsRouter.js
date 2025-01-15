@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { getAllDirectors, getDirectorById, createDirector, 
     updateDirectorGet, updateDirectorPost, deleteDirector,validateDirector } = require ("../controllers/directorsController");
-const upload = require('./multer');
+const upload = require('../middleware/multer');
 const verifyPassword = require('../middleware/verifyPassowrd');
 const asyncHandler = require('express-async-handler');
 

@@ -101,9 +101,9 @@
     </script>
 </head>
 <body>
-    <%- include('navbar', {links: links}) %>
+    <%- include('partials/navbar', {links: links}) %>
     <h1>Update Movie</h1>
-    <%- include('errors') %>
+    <%- include('partials/errors') %>
     <form id="updateForm" action="/movies/<%= movie.id %>/update" method="POST" enctype="multipart/form-data">
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" value="<%= movie.title %>">
@@ -152,7 +152,7 @@
         <input type="file" id="photo" name="photo">
         <!-- <button type="submit">Update Movie</button> -->
         <button type="button" onclick="showPasswordPrompt()">Update Movie</button>
-        <%- include('passwordPrompt') %>
+        <%- include('partials/passwordPrompt') %>
 
     </form>
     <script>

@@ -6,7 +6,7 @@
     <title>Director</title>
 </head>
 <body>
-    <%- include('navbar', {links: links}) %>
+    <%- include('partials/navbar', {links: links}) %>
     <h1> <%= director.first_name %> <%= director.last_name %></h1>
     <h2> <%= director.gender? director.gender : 'Unkown' %></h2>
     <h3> <%= director.birth_date ? new Date(director.birth_date).toDateString() :'Unkown' %></h3>
@@ -16,7 +16,7 @@
     <form action="/directors/<%= director.id %>/delete" method="POST">
         <!-- <button type="submit">Delete</button> -->
         <button type="button" onclick="showPasswordPrompt()">Delete</button>
-        <%- include('passwordPrompt') %>
+        <%- include('partials/passwordPrompt') %>
     </form>
     <h2>List of movies with directed below: </h2>
     <ul>

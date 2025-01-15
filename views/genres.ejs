@@ -6,9 +6,9 @@
     <title>Genres</title>
 </head>
 <body>
-    <%- include('navbar', {links: links}) %>
+    <%- include('partials/navbar', {links: links}) %>
     <h1>Genres List</h1>
-    <%- include('errors') %>
+    <%- include('partials/errors') %>
     <form action="/categories" method="POST">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name">

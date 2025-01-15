@@ -6,15 +6,15 @@
     <title>Update Genre</title>
 </head>
 <body>
-    <%- include('navbar', {links: links}) %>
+    <%- include('partials/navbar', {links: links}) %>
     <h1>Update Genre</h1>
-    <%- include('errors') %>
+    <%- include('./partials/errors') %>
     <form action="/categories/<%= genre.id %>/update" method="POST">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" value="<%= genre.name %>">
         <!-- <button type="submit">Update Genre</button> -->
         <button type="button" onclick="showPasswordPrompt()">Update Genre</button>
-        <%- include('passwordPrompt') %>
+        <%- include('partials/passwordPrompt') %>
     </form>
 <script>
     function showPasswordPrompt() {

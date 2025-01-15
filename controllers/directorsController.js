@@ -27,7 +27,7 @@ exports.validateDirector = [
         .isAlpha().withMessage(alphaErr)
         .isLength({ min: 1, max: 20 }).withMessage(lengthErr),
         body("birth_date").optional({ checkFalsy: true }).isDate().withMessage("Invalid date format")
-        .custom((value) => {
+        .custom((value, { req }) => {
             const currentDate = new Date().toISOString().split('T')[0];
             if (value > currentDate) {
                 throw new Error("Birth date cannot be in the future");
@@ -38,10 +38,16 @@ exports.validateDirector = [
             return true;
         }),
         body("death_date").optional({ checkFalsy: true }).isDate().withMessage("Invalid date format")
-        .custom((value) => {
+        .custom((value, { req }) => {
             const currentDate = new Date().toISOString().split('T')[0];
             if (value > currentDate) {
                 throw new Error("Death date cannot be in the future");
+            }
+            if (value && req.body.birth_date && value < req.body.birth_date) {
+                throw new Error("Death date cannot be before birth date");
+            }
+            if (value && !req.body.birth_date) {
+                throw new Error("Birth date must be provided if death date is provided");
             }
             return true;
         })

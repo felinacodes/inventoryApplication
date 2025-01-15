@@ -6,7 +6,7 @@
     <title>Genre</title>
 </head>
 <body>
-    <%- include('navbar', {links: links}) %>
+    <%- include('partials/navbar', {links: links}) %>
     <h1> <%= genre.name %></h1>
     <a href="/categories/<%= genre.id %>/update">Update</a>
     
@@ -15,12 +15,12 @@
     <form action="/categories/<%= genre.id %>/delete" method="POST">
         <!-- <button type="submit">Delete</button> -->
             <button type="button" onclick="showPasswordPrompt()">Delete</button>
-        <%- include('passwordPrompt') %>
+            <%- include('partials/passwordPrompt') %>
     </form>
     <h2>List of movies with this genre below: </h2>
 
     <div>
-        <%- include('sortFilter', { 
+        <%- include('partials/sortFilter', { 
             action: `/categories/${genre.id}`, 
             sort_by: sort_by, 
             order: order, 
@@ -43,7 +43,7 @@
             </a>
         <% }) %>
 
-        <%- include('pagination', {
+        <%- include('partials/pagination', {
             action: `/categories/${genre.id}`,
             page: page,
             pageSize: pageSize,

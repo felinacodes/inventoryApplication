@@ -11,8 +11,6 @@ const errorHandler = require("./middleware/errorHandling");
 const { 
     CustomError, 
     CustomNotFoundError, 
-    CustomValidationError, 
-    CustomUnauthorizedError 
 } = require('./middleware/errorHandling');
 require('dotenv').config(); // remove ? 
 
@@ -48,8 +46,7 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    // console.log(err);
-  //  console.log(err);
+   console.log(err);
     const responseMessage = process.env.NODE_ENV === 'development' ? err.message : 'An error occurred.';
     if (err instanceof CustomError) {
         console.log(process.env.NODE_ENV);
@@ -58,6 +55,12 @@ app.use((err, req, res, next) => {
     }
     if (err instanceof CustomNotFoundError) {
         return res.status(err.statusCode).json({message: responseMessage});
+    }
+
+    if (req.fileValidationError) {
+        // return res.status(400).render('partials/errors', { message: req.fileValidationError.message });
+        console.log('in pass');
+        return res.status(500).json({message: responseMessage});
     }
 
     res.status(500).json({ message: 'Internal Server Error' });

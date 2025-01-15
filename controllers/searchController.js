@@ -14,7 +14,7 @@ const { body, validationResult } = require("express-validator");
 async function searchController(req, res) {
     const query = req.query.q;
     if (!query) {
-      return res.render('searchResults', { results: []});
+      return res.render('partials/searchResults', { results: null});
     }
 
         const movies = await db.searchMovies(query);
@@ -29,7 +29,7 @@ async function searchController(req, res) {
           genres
       };
 
-      res.render('searchResults', { results });
+      res.render('partials/searchResults', { results });
 };
 
 module.exports = searchController;

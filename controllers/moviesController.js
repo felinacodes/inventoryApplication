@@ -24,7 +24,7 @@ exports.validateMovie = [
         .isLength({ min: 1, max: 50 }).withMessage(lengthErr),
     body("year")
         .isInt({ min: 1895, max: 2500 }).withMessage("Year must be between 1895 and 2500."),
-    body("description").trim().escape()
+    body("description").optional({ checkFalsy: true }).trim().escape()
         .isLength({ min: 1, max: 500 }).withMessage("Description must be between 1 and 500 characters.")
 ]
 

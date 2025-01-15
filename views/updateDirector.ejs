@@ -6,9 +6,9 @@
     <title>Update Director</title>
 </head>
 <body>
-    <%- include('navbar', {links: links}) %>
+    <%- include('partials/navbar', {links: links}) %>
     <h1>Update Actor</h1>
-    <%- include('errors') %>
+    <%- include('partials/errors') %>
     <form action="/directors/<%= director.id %>/update" method="POST" enctype="multipart/form-data">
         <label for="f_name">First Name:</label>
         <input type="text" id="f_name" name="f_name" value="<%= director.first_name %>">
@@ -35,7 +35,7 @@
         <input type="file" id="photo" name="photo">
         <!-- <button type="submit">Update Actor</button> -->
         <button type="button" onclick="showPasswordPrompt()">Update Director</button>
-        <%- include('passwordPrompt') %>
+        <%- include('partials/passwordPrompt') %>
     </form>
 
     <script>

@@ -6,8 +6,8 @@ const path = require("path");
 const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
 
 
-const alphaErr = "Must only contain letters.";
-const lengthErr = "Must be between 1 and 20 characters.";
+const alphaErr = "must only contain letters.";
+const lengthErr = "must be between 1 and 20 characters.";
 
 function deleteFile(filePath) {
     fs.unlink(path.join(__dirname, '..', filePath), (err) => {
@@ -21,13 +21,14 @@ function deleteFile(filePath) {
 
 exports.validateActor = [
     body("f_name").trim().escape()
-        .isAlpha().withMessage(alphaErr)
-        .isLength({ min: 1, max: 20 }).withMessage(lengthErr),
+        .isAlpha().withMessage(`First name ${alphaErr}`)
+        .isLength({ min: 1, max: 20 }).withMessage(`First name ${lengthErr}`),
     body("l_name").trim().escape()
-        .isAlpha().withMessage(alphaErr)
-        .isLength({ min: 1, max: 20 }).withMessage(lengthErr),
+        .isAlpha().withMessage(`last name ${alphaErr}`)
+        .isLength({ min: 1, max: 20 }).withMessage(`Last name ${lengthErr}`),
+    body("gender").optional().isIn(['Male', 'Female']).withMessage("Invalid gender value"),
         body("birth_date").optional({ checkFalsy: true }).isDate().withMessage("Invalid date format")
-        .custom((value) => {
+        .custom((value, {req }) => {
             const currentDate = new Date().toISOString().split('T')[0];
             if (value > currentDate) {
                 throw new Error("Birth date cannot be in the future");
@@ -38,10 +39,16 @@ exports.validateActor = [
             return true;
         }),
         body("death_date").optional({ checkFalsy: true }).isDate().withMessage("Invalid date format")
-        .custom((value) => {
+        .custom((value, {req}) => {
             const currentDate = new Date().toISOString().split('T')[0];
             if (value > currentDate) {
                 throw new Error("Death date cannot be in the future");
+            }
+            if (value && req.body.birth_date && value < req.body.birth_date) {
+                throw new Error("Death date cannot be before birth date");
+            }
+            if (value && !req.body.birth_date) {
+                throw new Error("Birth date must be provided if death date is provided");
             }
             return true;
         })

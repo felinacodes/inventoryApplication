@@ -6,9 +6,9 @@
     <title>Update Actor</title>
 </head>
 <body>
-    <%- include('navbar', {links: links}) %>
+    <%- include('partials/navbar', {links: links}) %>
     <h1>Update Actor</h1>
-    <%- include('errors') %>
+    <%- include('partials/errors') %>
     <form action="/actors/<%= actor.id %>/update" method="POST" enctype="multipart/form-data">
         <label for="f_name">First Name:</label>
         <input type="text" id="f_name" name="f_name" value="<%= actor.first_name %>">
@@ -34,7 +34,7 @@
         />
         <input type="file" id="photo" name="photo">
         <button type="button" onclick="showPasswordPrompt()">Update Movie</button>
-        <%- include('passwordPrompt') %>
+        <%- include('partials/passwordPrompt') %>
     </form>
 
     <script>

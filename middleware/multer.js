@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
 // Initialize upload
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 5000000 }, // 5MB limit
+    limits: { fileSize: 1024000 }, // 1MB limit
     fileFilter: function(req, file, cb) {
         checkFileType(file, cb);
     }
@@ -31,7 +31,7 @@ function checkFileType(file, cb) {
     if (mimetype && extname) {
         return cb(null, true);
     } else {
-        cb('Error: Images Only!');
+        cb(new Error('Error: Images Only!'));
     }
 }
 
@@ -39,7 +39,11 @@ function checkFileType(file, cb) {
 function uploadMiddleware(req, res, next) {
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
-            req.fileValidationError = err;
+            if (err.code === 'LIMIT_FILE_SIZE') {
+                req.fileValidationError = new Error('Error: File size too large. Maximum size is 1MB.');
+            } else {
+                req.fileValidationError = err;
+            }
         } else if (err) {
             req.fileValidationError = new Error(err);
         }

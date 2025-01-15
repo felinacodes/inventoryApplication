@@ -6,9 +6,9 @@
     <title>Actors</title>
 </head>
 <body>
-    <%- include('navbar', {links: links}) %>
+    <%- include('partials/navbar', {links: links}) %>
     <h1>Actors List</h1>
-    <%- include('errors') %>
+    <%- include('partials/errors') %>
     <form action="/actors" method="POST" enctype="multipart/form-data">
         <label for="f_name">First Name:</label>
         <input type="text" id="f_name" name="f_name">
@@ -31,7 +31,7 @@
     </form>
 
     <div>
-        <%- include('sortFilter', { 
+        <%- include('partials/sortFilter', { 
             action: '/actors', 
             sort_by: sort_by, 
             order: order, 
@@ -58,7 +58,7 @@
         <% }) %>
     </ul>
 
-    <%- include('pagination', {
+    <%- include('partials/pagination', {
         action: '/actors',
         page: page,
         pageSize: pageSize,
