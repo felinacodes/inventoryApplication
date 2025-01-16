@@ -4,20 +4,20 @@ const db = require("../db/queries");
 const fs = require("fs");
 const path = require("path");
 const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
-
+const { deleteFile } = require("../utils/deleteFile");
 
 const alphaErr = "Must only contain letters.";
 const lengthErr = "Must be between 1 and 20 characters.";
 
-function deleteFile(filePath) {
-    fs.unlink(path.join(__dirname, '..', filePath), (err) => {
-        if (err){
-            console.error(`Error deleting file: ${filePath}`, err);
-        } else {
-            console.log(`File deleted: ${filePath}`);
-        }
-    });
-}
+// function deleteFile(filePath) {
+//     fs.unlink(path.join(__dirname, '..', filePath), (err) => {
+//         if (err){
+//             console.error(`Error deleting file: ${filePath}`, err);
+//         } else {
+//             console.log(`File deleted: ${filePath}`);
+//         }
+//     });
+// }
 
 exports.validateDirector = [
     body("f_name").trim().escape()
@@ -97,7 +97,15 @@ exports.createDirector = async(req, res) => {
          const pageSize = parseInt(req.query.pageSize) || 10;
          const totalDirectors = await db.getDirectorsCount(req.body.filter);
         if (!errors.isEmpty()) {
-            console.log(errors.array());
+            if (req.file) {
+                           const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
+                           // console.log(photoPath);
+                           fs.unlink(photoPath, (err) => {
+                               if (err) {
+                                   console.error(`Error deleting file: ${photoPath}`, err);
+                               }
+                           });
+                       }
             const directors = await db.getAllDirectors();
             return res.status(400).render("directors",
                 {
@@ -142,6 +150,15 @@ exports.updateDirectorPost = async(req, res) => {
         const director = await db.getDirectorById(req.params.id);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
+             if (req.file) {
+                            const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
+                            // console.log(photoPath);
+                            fs.unlink(photoPath, (err) => {
+                                if (err) {
+                                    console.error(`Error deleting file: ${photoPath}`, err);
+                                }
+                            });
+                        }
             return res.status(400).render("updateDirector", {
                 director: director,
                 errors: errors.array()
@@ -166,6 +183,10 @@ exports.deleteDirector = async (req,res, next) => {
     checkDataExistence(director, next);
     if (director.photo_url) {
         deleteFile(director.photo_url);
+    }
+    const associatedMovies = await db.getAllMoviesByDirector(req.params.id);
+    if (associatedMovies.length >0) {
+        await db.deleteMovieDirectorsByDirectorId(req.params.id);
     }
     await db.deleteDirector(req.params.id);
     res.redirect("/directors");

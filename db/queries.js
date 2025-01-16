@@ -438,6 +438,17 @@ async function test() {
     // return null;
 };
 
+async function deleteMovieActorsByActorId(actor_id) {
+    await pool.query('DELETE FROM movie_actors WHERE actor_id = $1', [actor_id]);
+};
+
+async function deleteMovieGenresByGenreId(genre_id) {
+    await pool.query('DELETE FROM movie_genres WHERE genre_id = $1', [genre_id]);
+};
+
+async function deleteMovieDirectorsByDirectorId(director_id) {
+    await pool.query('DELETE FROM movie_directors WHERE director_id = $1', [director_id]);
+};
 module.exports = {
     getAllCategories,
     addCategory,
@@ -485,4 +496,7 @@ module.exports = {
     getCompleteActorsList,
     getCompleteDirectorsList,
     test,
+    deleteMovieActorsByActorId,
+    deleteMovieGenresByGenreId,
+    deleteMovieDirectorsByDirectorId,
 };

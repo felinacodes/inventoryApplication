@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actor</title>
+    <link rel="icon" href="/public/favicon.png" type="image/png">
+
 </head>
 <body>
     <%- include('partials/navbar', {links: links}) %>
@@ -28,12 +30,6 @@
             </a>
         <% }) %>
     </ul>
-
-    <script>
-        function showPasswordPrompt() {
-       document.getElementById('passwordPrompt').style.display = 'block';
-   }
-
-   </script>
+   <script src="/public/js/showPasswordPrompt.js"></script>
 </body>
 </html>

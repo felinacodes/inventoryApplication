@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Genre</title>
+    <link rel="icon" href="/public/favicon.png" type="image/png">
+
 </head>
 <body>
     <%- include('partials/navbar', {links: links}) %>
@@ -16,10 +18,6 @@
         <button type="button" onclick="showPasswordPrompt()">Update Genre</button>
         <%- include('partials/passwordPrompt') %>
     </form>
-<script>
-    function showPasswordPrompt() {
-        document.getElementById('passwordPrompt').style.display = 'block';
-    }
-</script>
+    <script src="/public/js/showPasswordPrompt.js"></script>
 </body>
 </html>

@@ -93,8 +93,12 @@ exports.updateCategoryPost = async(req, res) => {
     };
 
 exports.deleteCategory = async(req, res, next) => {
+    const associatedMovies = await db.getAllMoviesByGenre(req.params.id);
+    if (associatedMovies.length > 0) {
+        await db.deleteMovieGenresByGenreId(req.params.id);
+    }
     await db.deleteCategory(req.params.id);
-    checkDataExistence(movie, next);
+    // checkDataExistence(movie, next);
     res.redirect("/categories");
 }
     

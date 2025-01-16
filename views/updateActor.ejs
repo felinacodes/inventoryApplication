@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Actor</title>
+    <link rel="icon" href="/public/favicon.png" type="image/png">
+
 </head>
 <body>
     <%- include('partials/navbar', {links: links}) %>
@@ -36,28 +38,7 @@
         <button type="button" onclick="showPasswordPrompt()">Update Movie</button>
         <%- include('partials/passwordPrompt') %>
     </form>
-
-    <script>
-        const photoInput = document.getElementById('photo');
-        const photoPreview = document.getElementById('photoPreview');
-
-        photoInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    photoPreview.src = e.target.result; // Set the preview image source
-                };
-                reader.readAsDataURL(file); // Read the file as a data URL
-            } else {
-                // If no file is selected, revert to the default or existing photo
-                photoPreview.src = '<%= actor.photo_url || "/images/default.jpg" %>';
-            }
-        });
-
-        function showPasswordPrompt() {
-        document.getElementById('passwordPrompt').style.display = 'block';
-    }
-    </script>
+    <script src="/public/js/photoPreview.js"></script>
+    <script src="/public/js/showPasswordPrompt.js"></script>
 </body>
 </html>

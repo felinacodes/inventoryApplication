@@ -4,20 +4,21 @@ const db = require("../db/queries");
 const fs = require("fs");
 const path = require("path");
 const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
+const { deleteFile } = require ('../utils/deleteFile');
 
 
 const alphaErr = "must only contain letters.";
 const lengthErr = "must be between 1 and 20 characters.";
 
-function deleteFile(filePath) {
-    fs.unlink(path.join(__dirname, '..', filePath), (err) => {
-        if (err){
-            console.error(`Error deleting file: ${filePath}`, err);
-        } else {
-            console.log(`File deleted: ${filePath}`);
-        }
-    });
-}
+// function deleteFile(filePath) {
+//     fs.unlink(path.join(__dirname, '..', filePath), (err) => {
+//         if (err){
+//             console.error(`Error deleting file: ${filePath}`, err);
+//         } else {
+//             console.log(`File deleted: ${filePath}`);
+//         }
+//     });
+// }
 
 exports.validateActor = [
     body("f_name").trim().escape()
@@ -102,6 +103,15 @@ exports.createActor = async(req, res) => {
          const pageSize = parseInt(req.query.pageSize) || 10;
          const totalActors = await db.getActorsCount(req.body.filter);
         if (!errors.isEmpty()) {
+            if (req.file) {
+                const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
+                // console.log(photoPath);
+                fs.unlink(photoPath, (err) => {
+                    if (err) {
+                        console.error(`Error deleting file: ${photoPath}`, err);
+                    }
+                });
+            }
             const actors = await db.getAllActors();
             return res.status(400).render("actors",
                 {
@@ -149,6 +159,16 @@ exports.updateActorPost = async(req, res) => {
         const actor = await db.getActorById(req.params.id);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
+             // Delete the uploaded photo if there are validation errors
+            if (req.file) {
+                const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
+                // console.log(photoPath);
+                fs.unlink(photoPath, (err) => {
+                    if (err) {
+                        console.error(`Error deleting file: ${photoPath}`, err);
+                    }
+                });
+            }
             return res.status(400).render("updateActor", {
                 actor: actor,
                 errors: errors.array()
@@ -167,12 +187,16 @@ exports.updateActorPost = async(req, res) => {
         res.redirect(`/actors/${req.params.id}`);
     };
 
-exports.deleteActor = async (req,res) => {
+exports.deleteActor = async (req,res, next) => {
     const actor = await db.getActorById(req.params.id);
     if (actor.photo_url) {
         deleteFile(actor.photo_url);
     }
-    checkDataExistence(movie, next);
+    const associatedMovies = await db.getAllMoviesByActor(req.params.id);
+    if (associatedMovies.length > 0) {
+        await db.deleteMovieActorsByActorId(req.params.id);
+    }
+    checkDataExistence(actor, next);
     
     await db.deleteActor(req.params.id);
     res.redirect("/actors");

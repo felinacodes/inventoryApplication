@@ -3,21 +3,21 @@ const db = require("../db/queries");
 const fs = require("fs");
 const path = require("path");
 const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
-
+const { deleteFile } = require("../utils/deleteFile");
 const lengthErr = "Title must be between 1 and 50 characters.";
 
-function deleteFile(filePath) {
-    if (!filePath) {
-        return;
-    }
-    fs.unlink(path.join(__dirname, '..', filePath), (err) => {
-        if (err){
-            console.error(`Error deleting file: ${filePath}`, err);
-        } else {
-            console.log(`File deleted: ${filePath}`);
-        }
-    });
-}
+// function deleteFile(filePath) {
+//     if (!filePath) {
+//         return;
+//     }
+//     fs.unlink(path.join(__dirname, '..', filePath), (err) => {
+//         if (err){
+//             console.error(`Error deleting file: ${filePath}`, err);
+//         } else {
+//             console.log(`File deleted: ${filePath}`);
+//         }
+//     });
+// }
 
 exports.validateMovie = [
     body("title").trim().escape()
@@ -100,6 +100,16 @@ exports.createMovie = async(req, res, next) => {
         const totalMovies = await db.getMoviescount(req.body.filter);
 
         if (!errors.isEmpty()) {
+             if (req.file) {
+                            const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
+                            // console.log(photoPath);
+                            fs.unlink(photoPath, (err) => {
+                                if (err) {
+                                    console.error(`Error deleting file: ${photoPath}`, err);
+                                }
+                            });
+                        }
+
             const movies = await db.getAllMovies();
             const genres = await db.getAllCategories();
             const directors = await db.getAllDirectors();
@@ -191,6 +201,17 @@ exports.updateMoviePost = async(req,res) => {
         const MovieActors = await db.getMovieActors(req.params.id);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
+            
+             if (req.file) {
+                            const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
+                            // console.log(photoPath);
+                            fs.unlink(photoPath, (err) => {
+                                if (err) {
+                                    console.error(`Error deleting file: ${photoPath}`, err);
+                                }
+                            });
+                        }
+
             const genres = await db.getAllCategories();
             const directors = await db.getAllDirectors();
             const actors = await db.getAllActors();

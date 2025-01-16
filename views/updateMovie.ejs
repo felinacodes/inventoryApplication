@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Movie</title>
+    <link rel="icon" href="/public/favicon.png" type="image/png">
     <style>
           .selected-items {
             list-style-type: none;
@@ -25,46 +26,8 @@
             cursor: pointer;
         }
     </style>
+    <script src="/public/js/addItem.js"></script>
     <script>
-        function addItem(inputId, listId, dataListId, inputName) {
-            const input = document.getElementById(inputId);
-            const list = document.getElementById(listId);
-            const itemName = input.value;
-            const itemOption = document.querySelector(`#${dataListId} option[value="${itemName}"]`);
-            
-            if (!itemOption) {
-                // alert('Please select a valid item from the list.');
-                
-                return; // Exits the function if the item is not valid
-            }
-
-            const itemId = itemOption.dataset.id;
-
-                        // Check if the item is already selected
-            if (document.querySelector(`#${listId} input[value="${itemId}"]`)) {
-                // alert('This item is already selected.');
-                return; // Exits the function if the item is already selected
-            }
-
-            if (itemName && itemId)  {
-                const li = document.createElement('li');
-                li.textContent = itemName;
-                const button = document.createElement('button');
-                button.textContent = 'x';
-                button.onclick = () => li.remove();
-                li.appendChild(button);
-
-                const hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = inputName;
-                hiddenInput.value = itemId;
-                li.appendChild(hiddenInput);
-
-                list.appendChild(li);
-                input.value = '';
-            }
-        }
-
         // Function to render selected genres on page load
         function renderSelectedItems(items, listId, inputName) {
             // const selectedGenres = <%- JSON.stringify(MovieGenres) %>;
@@ -155,28 +118,7 @@
         <%- include('partials/passwordPrompt') %>
 
     </form>
-    <script>
-        const photoInput = document.getElementById('photo');
-        const photoPreview = document.getElementById('photoPreview');
-
-        photoInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    photoPreview.src = e.target.result; // Set the preview image source
-                };
-                reader.readAsDataURL(file); // Read the file as a data URL
-            } else {
-                // If no file is selected, revert to the default or existing photo
-                photoPreview.src = '<%= movie.photo_url || "/images/default.jpg" %>';
-            }
-        });
-
-        function showPasswordPrompt() {
-        document.getElementById('passwordPrompt').style.display = 'block';
-    }
-
-    </script>
+    <script src="/public/js/photoPreview.js"></script>
+    <script src="/public/js/showPasswordPrompt.js"></script>
 </body>
 </html>

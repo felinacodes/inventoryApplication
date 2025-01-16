@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie</title>
+    <link rel="icon" href="/public/favicon.png" type="image/png">
+
 </head>
 <body>
     <%- include('partials/navbar', {links: links}) %>
     <h1> <%= movie.title %></h1>
     <h5> <%= movie.year ? movie.year : 'Unkown' %></h5>
     <img src="<%= movie.photo_url ? movie.photo_url : '/public/images/default.jpg' %>" alt="movie poster" style="width: 100px; height: 100px;">
-    <h6> <%= movie.description ? movie.description : NULL  %></h6>
+    <h6> <%= movie.description ? movie.description : "No Description available"  %></h6>
     <h6> Genres:</h6>
     <ul>
         <% genres && genres.forEach(genre => { %>
@@ -37,11 +39,6 @@
          <button type="button" onclick="showPasswordPrompt()">Delete</button>
          <%- include('partials/passwordPrompt') %>
     </form>
-    <script>
-         function showPasswordPrompt() {
-        document.getElementById('passwordPrompt').style.display = 'block';
-    }
-
-    </script>
+    <script src="/public/js/showPasswordPrompt.js"></script>
 </body>
 </html>
