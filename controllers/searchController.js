@@ -1,21 +1,21 @@
 const db = require("../db/queries");
-const { body, validationResult } = require("express-validator");
+const { query, validationResult } = require("express-validator");
 
 
-// const validateMovie = [
-//     body("title").trim().escape()
-//         .isLength({ min: 1, max: 50 }).withMessage(lengthErr),
-//     body("year")
-//         .isInt({ min: 1895, max: 2500 }).withMessage("Year must be between 1895 and 2500."),
-//     body("description").trim().escape()
-//         .isLength({ min: 1, max: 500 }).withMessage("Description must be between 1 and 500 characters.")
-// ]
+const validateSearchQuery = [
+  query("q").trim().escape()
+      .isLength({ min: 1, max: 50 }).withMessage("Search query must be between 1 and 50 characters.")
+];
 
-async function searchController(req, res) {
-    const query = req.query.q;
-    if (!query) {
-      return res.render('partials/searchResults', { results: null});
-    }
+const searchController = async(req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+      return res.render('partials/searchResults', { 
+          results: null,
+          errors: errors.array(),
+      });
+  }
+        const query = req.query.q;
 
         const movies = await db.searchMovies(query);
         const actors = await db.searchActors(query);
@@ -32,4 +32,7 @@ async function searchController(req, res) {
       res.render('partials/searchResults', { results });
 };
 
-module.exports = searchController;
+module.exports = {
+  searchController,
+  validateSearchQuery,
+};

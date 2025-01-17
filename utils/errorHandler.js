@@ -24,7 +24,6 @@ const {CustomError,
 
     function checkDataExistence(...data) {
         const next = data.pop();
-       // console.log(data);
         for ( const item of data) {
             if (!item) {
                 return next(new CustomNotFoundError('Data not found.'));

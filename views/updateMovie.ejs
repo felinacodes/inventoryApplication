@@ -30,7 +30,6 @@
     <script>
         // Function to render selected genres on page load
         function renderSelectedItems(items, listId, inputName) {
-            // const selectedGenres = <%- JSON.stringify(MovieGenres) %>;
             const list = document.getElementById(listId);
             const nameFields = Object.keys(items[0]);
 
@@ -113,7 +112,6 @@
         height="100"
         />
         <input type="file" id="photo" name="photo">
-        <!-- <button type="submit">Update Movie</button> -->
         <button type="button" onclick="showPasswordPrompt()">Update Movie</button>
         <%- include('partials/passwordPrompt') %>
 

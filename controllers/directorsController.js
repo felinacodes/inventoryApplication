@@ -9,16 +9,6 @@ const { deleteFile } = require("../utils/deleteFile");
 const alphaErr = "Must only contain letters.";
 const lengthErr = "Must be between 1 and 20 characters.";
 
-// function deleteFile(filePath) {
-//     fs.unlink(path.join(__dirname, '..', filePath), (err) => {
-//         if (err){
-//             console.error(`Error deleting file: ${filePath}`, err);
-//         } else {
-//             console.log(`File deleted: ${filePath}`);
-//         }
-//     });
-// }
-
 exports.validateDirector = [
     body("f_name").trim().escape()
         .isAlpha().withMessage(alphaErr)
@@ -99,7 +89,6 @@ exports.createDirector = async(req, res) => {
         if (!errors.isEmpty()) {
             if (req.file) {
                            const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                           // console.log(photoPath);
                            fs.unlink(photoPath, (err) => {
                                if (err) {
                                    console.error(`Error deleting file: ${photoPath}`, err);
@@ -152,7 +141,6 @@ exports.updateDirectorPost = async(req, res) => {
         if (!errors.isEmpty()) {
              if (req.file) {
                             const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                            // console.log(photoPath);
                             fs.unlink(photoPath, (err) => {
                                 if (err) {
                                     console.error(`Error deleting file: ${photoPath}`, err);

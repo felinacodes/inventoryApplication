@@ -6,18 +6,6 @@ const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandl
 const { deleteFile } = require("../utils/deleteFile");
 const lengthErr = "Title must be between 1 and 50 characters.";
 
-// function deleteFile(filePath) {
-//     if (!filePath) {
-//         return;
-//     }
-//     fs.unlink(path.join(__dirname, '..', filePath), (err) => {
-//         if (err){
-//             console.error(`Error deleting file: ${filePath}`, err);
-//         } else {
-//             console.log(`File deleted: ${filePath}`);
-//         }
-//     });
-// }
 
 exports.validateMovie = [
     body("title").trim().escape()
@@ -102,7 +90,6 @@ exports.createMovie = async(req, res, next) => {
         if (!errors.isEmpty()) {
              if (req.file) {
                             const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                            // console.log(photoPath);
                             fs.unlink(photoPath, (err) => {
                                 if (err) {
                                     console.error(`Error deleting file: ${photoPath}`, err);
@@ -204,7 +191,6 @@ exports.updateMoviePost = async(req,res) => {
             
              if (req.file) {
                             const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                            // console.log(photoPath);
                             fs.unlink(photoPath, (err) => {
                                 if (err) {
                                     console.error(`Error deleting file: ${photoPath}`, err);

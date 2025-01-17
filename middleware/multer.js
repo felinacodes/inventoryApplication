@@ -1,12 +1,16 @@
 const multer = require('multer');
 const path = require('path');
+const crypto = require('crypto');
 
 // Set storage engine
 const storage = multer.diskStorage({
     destination: './public/uploads/',
     filename: function(req, file, cb) {
         console.log('Processing file:', file.originalname); // Debugging line
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        const sanitizedFilename = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+        const uniqueSuffix = Date.now() + '-' + crypto.randomBytes(4).toString('hex');
+        // cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(sanitizedFilename));
     }
 });
 

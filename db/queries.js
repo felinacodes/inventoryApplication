@@ -434,10 +434,6 @@ async function getCompleteDirectorsList() {
     return rows;
 };
 
-async function test() {
-    // return null;
-};
-
 async function deleteMovieActorsByActorId(actor_id) {
     await pool.query('DELETE FROM movie_actors WHERE actor_id = $1', [actor_id]);
 };
@@ -495,7 +491,6 @@ module.exports = {
     getCompleteGenresList,
     getCompleteActorsList,
     getCompleteDirectorsList,
-    test,
     deleteMovieActorsByActorId,
     deleteMovieGenresByGenreId,
     deleteMovieDirectorsByDirectorId,

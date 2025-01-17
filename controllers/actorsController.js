@@ -10,16 +10,6 @@ const { deleteFile } = require ('../utils/deleteFile');
 const alphaErr = "must only contain letters.";
 const lengthErr = "must be between 1 and 20 characters.";
 
-// function deleteFile(filePath) {
-//     fs.unlink(path.join(__dirname, '..', filePath), (err) => {
-//         if (err){
-//             console.error(`Error deleting file: ${filePath}`, err);
-//         } else {
-//             console.log(`File deleted: ${filePath}`);
-//         }
-//     });
-// }
-
 exports.validateActor = [
     body("f_name").trim().escape()
         .isAlpha().withMessage(`First name ${alphaErr}`)
@@ -105,7 +95,6 @@ exports.createActor = async(req, res) => {
         if (!errors.isEmpty()) {
             if (req.file) {
                 const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                // console.log(photoPath);
                 fs.unlink(photoPath, (err) => {
                     if (err) {
                         console.error(`Error deleting file: ${photoPath}`, err);
@@ -162,7 +151,6 @@ exports.updateActorPost = async(req, res) => {
              // Delete the uploaded photo if there are validation errors
             if (req.file) {
                 const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                // console.log(photoPath);
                 fs.unlink(photoPath, (err) => {
                     if (err) {
                         console.error(`Error deleting file: ${photoPath}`, err);

@@ -7,7 +7,6 @@ const searchRouter = require("./routes/searchRouter");
 const actorsRouter = require("./routes/actorsRouter");
 const directorsRouter = require("./routes/directorsRouter");
 const path = require("path");
-const errorHandler = require("./middleware/errorHandling");
 const { 
     CustomError, 
     CustomNotFoundError, 
@@ -41,13 +40,6 @@ app.use("/actors", actorsRouter);
 app.use("/directors", directorsRouter);
 app.use("/", indexRouter);
 
-// app.use((req, res, next) => {
-//     // if (CustomNotFoundError)
-//     console.log('404 middleware reached for URL:', req.originalUrl);
-//     next(new CustomNotFoundError("Page not found."));
-// });
-
-// Catch-all route for 404 errors
 app.use((req, res, next) => {
     if (req.originalUrl.startsWith('/public')) {
         console.log(`Static file not found: ${req.originalUrl}`);
@@ -128,8 +120,6 @@ module.exports = app;
 
 /*
 TODO: //
-! 1. Validation. 
-? 2. Move files in correct folders.
 * 3. Style.
 ? 4. Fix db false info. 
 ? 5. Add documentation.

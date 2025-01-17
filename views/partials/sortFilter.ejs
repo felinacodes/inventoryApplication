@@ -1,9 +1,4 @@
-<!-- <script>
-    console.log('Rendering sort-filter-form partial');
-</script> -->
-
-
-    <form id="sort-filter-form" method="GET" action="<%= action %>">
+<form id="sort-filter-form" method="GET" action="<%= action %>">
         <label for="sort_by">Sort by:</label>
         <select name="sort_by" id="sort_by" onchange="this.form.submit()">
             <% sortOptions.forEach((option, index) => { %>
