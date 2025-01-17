@@ -1,5 +1,10 @@
 {
+  "scripts": {
+    "build:css": "npx postcss src/styles/tailwind.css -o public/css/tailwind.css",
+    "watch:css": "npx nodemon --watch src/styles/tailwind.css --exec \"npm run build:css\""
+  },
   "dependencies": {
+    "autoprefixer": "^10.4.20",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
@@ -7,9 +12,12 @@
     "express-async-handler": "^1.2.0",
     "express-validator": "^7.2.1",
     "multer": "^1.4.5-lts.1",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.17"
   },
   "devDependencies": {
-    "pm2": "^5.4.3"
+    "pm2": "^5.4.3",
+    "postcss-cli": "^11.0.0"
   }
 }
