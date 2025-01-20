@@ -14,11 +14,11 @@ const {
 require('dotenv').config(); // remove ? 
 
 const links = [
-    { text: "home", href: "/" },
-    { text: "categories", href: "/categories" },
-    { text: "movies", href: "/movies" },
-    { text: "actors", href: "/actors" },
-    { text: "directors", href: "/directors" }, 
+    { text: "Home", href: "/", selected: true },
+    { text: "Categories", href: "/categories", selected: false},
+    { text: "Movies", href: "/movies", selected: false },
+    { text: "Actors", href: "/actors", selected: false },
+    { text: "Directors", href: "/directors", selected: false }, 
 ];
 
 
@@ -32,6 +32,19 @@ app.use((req, res, next) => {
     res.locals.links = links;
     next();
 });
+
+app.get('*', (req, res, next) => {
+    const currentUrl = req.originalUrl;
+    links.map(link => {
+        if (link.href === currentUrl) {
+            link.selected = true;
+        } else {
+            link.selected = false;
+        }
+    });
+    // console.log(currentUrl);
+    next();
+})
 
 app.use("/search", searchRouter);
 app.use("/categories", categoriesRouter);
@@ -120,7 +133,18 @@ module.exports = app;
 
 /*
 TODO: //
-* 3. Style.
+* 3. Style. =>
+    1. index
+    2. categories
+    3. movies
+    4. actors
+    5. directors
+    6. search
+    7. update categories
+    8. update movies
+    9. update actors
+    10. update directors 
+    12. footer
 ? 4. Fix db false info. 
 ? 5. Add documentation.
 ! 6. Deploy.

@@ -1,15 +1,29 @@
-<nav>
-    <ul>
-      <% for (let i = 0; i < links.length; i++) { %>
-        <li>
-          <a href="<%= links[i].href %>">
-            <span> <%= links[i].text %> </span>
-          </a>
-        </li>
-      <% } %>
-      <form action="/search" method="GET" style="display: inline;">
-        <input type="text" name="q" placeholder="Search...">
-        <button type="submit">Search</button>
+<nav class="flex justify-between items-center ">
+  <ul id="nav-items" class="flex flex-col md:flex-row gap-5 p-4 w-full justify-center md:justify-between text-center md:text-left">
+    <% for (let i = 0; i < links.length; i++) { %>
+      <li class="<%= links[i].selected ? 'relative' : '' %>">
+        <a href="<%= links[i].href %>" class="text-lg text-primary font-serif font-bold hover:text-primary-dark <%= links[i].selected ? 'custom-underline' : '' %>">
+          <span class=""> <%= links[i].text %> </span>
+        </a>
+      </li>
+    <% } %>
+    <li class="mt-4 md:mt-0 md:ml-auto">
+      <form action="/search" method="GET" class="inline-flex items-center ml-auto mt-4 md:mt-0">
+        <input type="text" name="q" placeholder="Search..." class="px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 font-serif">
+        <button type="submit" class="ml-2 px-4 py-1 bg-primary-dark text-white rounded font-serif">Search</button>
       </form>
-    </ul>
-  </nav>
+    </li>
+  </ul>
+  <div class="md:hidden absolute top-0 right-0 p-4 text-xl">
+    <button id="hamburger" class="text-primary">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
+</nav>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', () => {
+    const navItems = document.getElementById('nav-items');
+    navItems.classList.toggle('hidden');
+  });
+</script>
