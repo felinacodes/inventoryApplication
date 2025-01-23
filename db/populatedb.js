@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS actors (
     first_name VARCHAR (20) NOT NULL,
     last_name VARCHAR (20) NOT NULL,
     gender VARCHAR (6),
-    birth_date DATE CHECK (birth_date > '1900-01-01' AND birth_date <= '${currentDate}'),
-    death_date DATE CHECK (death_date > birth_date AND death_date <= '${currentDate}'),
+    birth_date DATE CHECK (birth_date > '1900-01-01' AND birth_date <=  CURRENT_DATE),
+    death_date DATE CHECK (death_date > birth_date AND death_date <= CURRENT_DATE),
     photo_url TEXT,
     age INTEGER
 );

@@ -15,7 +15,7 @@ require('dotenv').config(); // remove ?
 
 const links = [
     { text: "Home", href: "/", selected: true },
-    { text: "Categories", href: "/categories", selected: false},
+    { text: "Genres", href: "/categories", selected: false},
     { text: "Movies", href: "/movies", selected: false },
     { text: "Actors", href: "/actors", selected: false },
     { text: "Directors", href: "/directors", selected: false }, 

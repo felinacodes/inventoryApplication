@@ -29,10 +29,10 @@
           cursor: pointer;
       }
   </style>
-
+<script src="../public/js/dark-mode-toggle.js"></script>
 <script src="/public/js/addItem.js"></script>
 </head>
-<body>
+<body class="dark:bg-black">
     <%- include('partials/navbar', {links: links}) %>
     <h1>Movies List</h1>
     <%- include('partials/errors') %>
@@ -111,6 +111,7 @@
         filter: filter,
         totalItems: totalMovies
     }) %>
+ 
 </body>
 </html>
 

@@ -445,6 +445,22 @@ async function deleteMovieGenresByGenreId(genre_id) {
 async function deleteMovieDirectorsByDirectorId(director_id) {
     await pool.query('DELETE FROM movie_directors WHERE director_id = $1', [director_id]);
 };
+
+async function getLatest(limit = 5) {
+    const { rows } = await pool.query('SELECT * FROM movies ORDER BY id DESC LIMIT $1', [limit]);
+    return rows;
+    }
+
+async function getActorsBornToday() {
+    const { rows} = await pool.query('SELECT * FROM actors WHERE birth_date = CURRENT_DATE');
+    return rows;
+} 
+
+async function getDirectorsBornToday() {
+    const { rows} = await pool.query('SELECT * FROM directors WHERE birth_date = CURRENT_DATE');
+    return rows;
+} 
+
 module.exports = {
     getAllCategories,
     addCategory,
@@ -494,4 +510,7 @@ module.exports = {
     deleteMovieActorsByActorId,
     deleteMovieGenresByGenreId,
     deleteMovieDirectorsByDirectorId,
+    getLatest,
+    getActorsBornToday,
+    getDirectorsBornToday,
 };

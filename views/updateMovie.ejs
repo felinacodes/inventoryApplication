@@ -28,6 +28,7 @@
             cursor: pointer;
         }
     </style>
+    <script src="/public/js/dark-mode-toggle.js"></script>
     <script src="/public/js/addItem.js"></script>
     <script>
         // Function to render selected genres on page load
@@ -64,7 +65,7 @@
         };
     </script>
 </head>
-<body>
+<body class="dark:bg-black">
     <%- include('partials/navbar', {links: links}) %>
     <h1>Update Movie</h1>
     <%- include('partials/errors') %>
@@ -118,6 +119,7 @@
         <%- include('partials/passwordPrompt') %>
 
     </form>
+    
     <script src="/public/js/photoPreview.js"></script>
     <script src="/public/js/showPasswordPrompt.js"></script>
 </body>

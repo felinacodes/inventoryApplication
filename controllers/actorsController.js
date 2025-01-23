@@ -92,6 +92,7 @@ exports.createActor = async(req, res) => {
          const page = parseInt(req.query.page) || 1;
          const pageSize = parseInt(req.query.pageSize) || 10;
          const totalActors = await db.getActorsCount(req.body.filter);
+
         if (!errors.isEmpty()) {
             if (req.file) {
                 const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);

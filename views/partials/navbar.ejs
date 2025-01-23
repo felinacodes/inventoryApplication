@@ -1,4 +1,4 @@
-<nav class="flex justify-between items-center ">
+<nav class="flex justify-between items-center relative">
   <ul id="nav-items" class="flex flex-col md:flex-row gap-5 p-4 w-full justify-center md:justify-between text-center md:text-left">
     <% for (let i = 0; i < links.length; i++) { %>
       <li class="<%= links[i].selected ? 'relative' : '' %>">
@@ -10,15 +10,23 @@
     <li class="mt-4 md:mt-0 md:ml-auto">
       <form action="/search" method="GET" class="inline-flex items-center ml-auto mt-4 md:mt-0">
         <input type="text" name="q" placeholder="Search..." class="px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 font-serif">
-        <button type="submit" class="ml-2 px-4 py-1 bg-primary-dark text-white rounded font-serif">Search</button>
+        <button type="submit" class="ml-2 px-4 py-1 bg-primary-dark text-white rounded font-serif hover:bg-secondary">Search</button>
       </form>
+      <button id="dark-mode-toggle" class= "dark:text-gray-200 ml-2 rounded absolute top-10 right-0 p-4 ">
+        <i id="dark-mode-icon" class="fas fa-moon text-primary hover:text-primary-dark"></i>
+    </button>
     </li>
+
+    
   </ul>
+ 
+
   <div class="md:hidden absolute top-0 right-0 p-4 text-xl">
-    <button id="hamburger" class="text-primary">
-      <i class="fas fa-bars"></i>
+    <button id="hamburger" class="text-primary hover:text-primary-dark">
+      <i class="fas fa-bars "></i>
     </button>
   </div>
+  
 </nav>
 
 <script>
@@ -26,4 +34,30 @@
     const navItems = document.getElementById('nav-items');
     navItems.classList.toggle('hidden');
   });
+
+  // document.addEventListener('DOMContentLoaded', function() {
+  //           const darkModeToggle = document.getElementById('dark-mode-toggle');
+  //           const darkModeIcon = document.getElementById('dark-mode-icon');
+  //           const body = document.body;
+
+  //           // Check localStorage for dark mode preference
+  //           if (localStorage.getItem('darkMode') === 'enabled') {
+  //               body.classList.add('dark');
+  //               darkModeIcon.classList.remove('fa-moon');
+  //               darkModeIcon.classList.add('fa-sun');
+  //           }
+
+  //           darkModeToggle.addEventListener('click', function() {
+  //               body.classList.toggle('dark');
+  //               if (body.classList.contains('dark')) {
+  //                   localStorage.setItem('darkMode', 'enabled');
+  //                   darkModeIcon.classList.remove('fa-moon');
+  //                   darkModeIcon.classList.add('fa-sun');
+  //               } else {
+  //                   localStorage.setItem('darkMode', 'disabled');
+  //                   darkModeIcon.classList.remove('fa-sun');
+  //                   darkModeIcon.classList.add('fa-moon');
+  //               }
+  //           });
+  // })
 </script>

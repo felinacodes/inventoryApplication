@@ -8,23 +8,35 @@
     <link rel="icon" href="/public/favicon.png" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-</head>
-<body>
-    <%- include('partials/navbar', {links: links}) %>
-    <h1>Genres List</h1>
-    <%- include('partials/errors') %>
-    <form action="/categories" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name">
-        <button type="submit">Add Genre</button>
-        </form> 
+    <script src="../public/js/dark-mode-toggle.js"></script>
 
-    <ul>
-        <% genres.forEach(genre => { %>
-            <li><%= genre.name %>
-                <a href="/categories/<%= genre.id %>">View</a>
-            </li>
-        <% }) %>
-    </ul>
+</head>
+<body class="bg-background dark:bg-background-darkBG">
+    <%- include('partials/navbar', {links: links}) %>
+    <main class="flex justify-center items-center flex-col p-4 m-2">
+        <%- include('partials/errors') %>
+        <div>
+            <form action="/categories" method="POST">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+                <button type="submit">Add Genre</button>
+                </form> 
+        </div>
+       
+
+        <h1>Genres List</h1> 
+
+        <ul>
+            <% genres.forEach(genre => { %>
+                <li><%= genre.name %>
+                    <a href="/categories/<%= genre.id %>">View</a>
+                </li>
+            <% }) %>
+        </ul>
+    </main>
+   <div class="mb-auto inset-0">
+    <%- include('partials/footer') %>
+   </div>
+    
 </body>
 </html>
