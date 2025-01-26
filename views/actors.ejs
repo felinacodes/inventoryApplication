@@ -9,31 +9,37 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     <script src="../public/js/dark-mode-toggle.js"></script>
+    <script src="../public/js/toggle-add.js"></script>
 </head>
 <body>
     <%- include('partials/navbar', {links: links}) %>
     <h1>Actors List</h1>
     <%- include('partials/errors') %>
-    <form action="/actors" method="POST" enctype="multipart/form-data">
-        <label for="f_name">First Name:</label>
-        <input type="text" id="f_name" name="f_name">
-        <label for="l_name">Last Name:</label>
-        <input type="text" id="l_name" name="l_name">
-        <label for="gender">Gender:</label>
-        <select id="gender" name="gender">
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-        </select>
-        <label for="birth_date"> Birth Date: </label>
-        <input type="date" id="birth_date" name="birth_date">
-
-        <label for="death_date"> Death Date: (leave it empty if alive)</label>
-        <input type="date" id="death_date" name="death_date">
-
-        <label for="photo">Photo:</label>
-        <input type="file" id="photo" name="photo">
-        <button type="submit">Add Actor</button>
-    </form>
+    <div>
+        <!-- <button id="toggle-form-button" onclick="toggleForm(this)" >Add a new Actor</button> -->
+        <%- include('partials/addBtn')%>
+        <form action="/actors" method="POST" enctype="multipart/form-data" class="add-genre-form hidden">
+            <label for="f_name">First Name:</label>
+            <input type="text" id="f_name" name="f_name">
+            <label for="l_name">Last Name:</label>
+            <input type="text" id="l_name" name="l_name">
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+            <label for="birth_date"> Birth Date: </label>
+            <input type="date" id="birth_date" name="birth_date">
+    
+            <label for="death_date"> Death Date: (leave it empty if alive)</label>
+            <input type="date" id="death_date" name="death_date">
+    
+            <label for="photo">Photo:</label>
+            <input type="file" id="photo" name="photo">
+            <button type="submit">Add Actor</button>
+        </form>
+    </div>
+  
 
     <div>
         <%- include('partials/sortFilter', { 

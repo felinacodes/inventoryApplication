@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,34 +9,35 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     <script src="../public/js/dark-mode-toggle.js"></script>
-
+    <script src="../public/js/toggle-add.js"></script>
 </head>
-<body class="bg-background dark:bg-background-darkBG">
+<body class="flex flex-col h-full bg-background dark:bg-background-darkBG">
     <%- include('partials/navbar', {links: links}) %>
-    <main class="flex justify-center items-center flex-col p-4 m-2">
+    <main class="flex-1 flex items-center flex-col p-2 m-2 ">
         <%- include('partials/errors') %>
-        <div>
-            <form action="/categories" method="POST">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name">
-                <button type="submit">Add Genre</button>
+        <!-- <div class="m-4 mt-2 border-2 border-green-500"> -->
+            <%- include('partials/addBtn')%>
+            <form action="/categories" method="POST" class="add-form <%= locals.formOpen ? '' : 'hidden' %>">
+                <label for="name" class="text-primary-dark font-semibold mr-2">Name:*</label >
+                <input type="text" id="name" name="name" class="px-2 py-1 rounded 
+                focus:outline-none focus:ring-2 focus:ring-orange-300 border border-gray-300
+                font-serif">
+                <button type="submit" class="ml-4">
+                    <i class="fa-solid fa-circle-plus text-primary-dark hover:text-secondary"></i>
+                </button>
                 </form> 
-        </div>
-       
-
-        <h1>Genres List</h1> 
-
-        <ul>
+        <!-- </div> -->
+        <h1 class="title">Genres List</h1> 
+        <ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
             <% genres.forEach(genre => { %>
-                <li><%= genre.name %>
-                    <a href="/categories/<%= genre.id %>">View</a>
+                <li class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow hover:underline hover:shadow-lg transition-shadow duration-300">
+                    <a href="/categories/<%= genre.id %>" class="block text-center text-lg font-semibold text-primary-dark dark:text-white">
+                        <%= genre.name %>
+                    </a>
                 </li>
             <% }) %>
         </ul>
     </main>
-   <div class="mb-auto inset-0">
-    <%- include('partials/footer') %>
-   </div>
-    
+    <%- include('partials/footer') %>    
 </body>
 </html>

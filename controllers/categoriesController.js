@@ -3,13 +3,13 @@ const { body, validationResult } = require("express-validator");
 const db = require("../db/queries");
 const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
 
-const alphaErr = "Must only contain letters.";
-const lengthErr = "Must be between 1 and 20 characters.";
+const alphaErr = "must only contain letters.";
+const lengthErr = "must be between 1 and 20 characters.";
 
 exports.validateCategory = [
     body("name").trim().escape()
-        .isAlpha().withMessage(alphaErr)
-        .isLength({ min: 1, max: 20 }).withMessage(lengthErr)
+        .isAlpha().withMessage(`Name ${alphaErr}`)
+        .isLength({ min: 1, max: 20 }).withMessage(`Name ${lengthErr}`)
 ]
 
 
@@ -20,7 +20,7 @@ exports.getAllCategories = async(req, res) => {
 
 exports.getCategoryById = async(req, res, next) => {
     const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 10;
+    const pageSize = parseInt(req.query.pageSize) || 12;
 
     const { sort_by = 'title', order = 'asc', filter } = req.query;
     const genre = await db.getCategoryById(req.params.id);
@@ -38,7 +38,7 @@ exports.getCategoryById = async(req, res, next) => {
           filter: req.query.filter,
           page: page,
           pageSize: pageSize,
-          totalMovies: totalMovies
+          totalMovies: totalMovies,
                 }
     next();
 };
@@ -62,7 +62,9 @@ exports.createCategory = async(req, res) => {
             return res.status(400).render("genres",
                 {
                     genres: genres,
-                    errors: errors.array()
+                    errors: errors.array(),
+                    formOpen : true,
+
                 });
         }
         await db.addCategory(req.body.name);

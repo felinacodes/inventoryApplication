@@ -1,21 +1,32 @@
-<form id="sort-filter-form" method="GET" action="<%= action %>">
-        <label for="sort_by">Sort by:</label>
-        <select name="sort_by" id="sort_by" onchange="this.form.submit()">
+<form id="sort-filter-form" method="GET" action="<%= action %>"
+    class="m-2 flex mb-5">
+    <div class="">
+        <label for="sort_by" class="mb-10 text-sm font-medium mr-2 text-black dark:text-white">Sort by:</label>
+        <select name="sort_by" id="sort_by" onchange="this.form.submit()" class="px-1.5 py-1 mr-2 border border-gray-300 
+        rounded-md shadow-sm focus:outline-none focus:ring-primary-dark focus:border-primary-dark sm:text-sm">
             <% sortOptions.forEach((option, index) => { %>
                 <option value="<%= option.value %>" <%= sort_by === option.value|| (!sort_by && index === 0) ? 'selected' : '' %>><%= option.text %></option>
             <% }) %>
         </select> 
-        <label for="order">Order:</label>
-        <select name="order" id="order" onchange="this.form.submit()"">
+    </div>
+    <div>
+        <label for="order" class="text-sm font-medium mr-2 text-black dark:text-white">Order:</label>
+        <select name="order" id="order" onchange="this.form.submit()"  class="px-1.5 py-1 mr-2 border border-gray-300 
+        rounded-md shadow-sm focus:outline-none focus:ring-primary-dark focus:border-primary-dark sm:text-sm">
             <option value="asc" <%= order === 'asc' ? 'selected' : '' %>>Ascending</option>
             <option value="desc" <%= order === 'desc' ? 'selected' : '' %>>Descending</option>
         </select>
-        <label for="filter">Filter:</label>
-        <select name="filter" id="filter" onchange="this.form.submit()">
+    </div>
+    <div>
+        <label for="filter" class="text-sm font-medium mr-2 text-black dark:text-white">Filter:</label>
+        <select name="filter" id="filter" onchange="this.form.submit()" class="px-1.5 py-1 mr-2 border border-gray-300 
+        rounded-md shadow-sm focus:outline-none focus:ring-primary-dark focus:border-primary-dark sm:text-sm">
             <option value="all" <%= filter === 'all' ? 'selected' : '' %>>All</option>
             <% filterOptions.forEach(option => { %>
                 <option value="<%= option %>" <%= filter === option.toString() ? 'selected' : '' %>><%= option %></option>
                 <% }) %>
           </select>
+    </div>
+        
     </form>
 

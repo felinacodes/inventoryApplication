@@ -1,11 +1,19 @@
-<div class="pagination">
+<div class="flex justify-center items-center space-x-2 mt-4">
     <% if (page > 1) { %>
-        <a href="<%= action %>?page=1&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>">First</a>
-        <a href="<%= action %>?page=<%= page - 1 %>&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>">Previous</a>
+        <a href="<%= action %>?page=1&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>" class="px-3 py-1 rounded-md text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700">
+            <i class="fas fa-angle-double-left"></i>
+        </a>
+        <a href="<%= action %>?page=<%= page - 1 %>&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>" class="rounded-md px-3 py-1 text-gray-700 hover:bg-gray-100  dark:text-gray-300 dark:hover:bg-gray-700">
+            <i class="fas fa-angle-left"></i>
+        </a>
     <% } %>
-    <span>Page <%= page %></span>
+    <span class="px-3 py-1   text-gray-700  dark:text-gray-300">Page <%= page %></span>
     <% if (page < Math.ceil(totalItems / pageSize)) { %>
-        <a href="<%= action %>?page=<%= page + 1 %>&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>">Next</a>
-        <a href="<%= action %>?page=<%= Math.ceil(totalItems / pageSize) %>&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>">Last</a>
+        <a href="<%= action %>?page=<%= page + 1 %>&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>" class="rounded-md px-3 py-1  text-gray-700 hover:bg-gray-100  dark:text-gray-300 dark:hover:bg-gray-700">
+            <i class="fas fa-angle-right"></i>
+        </a>
+        <a href="<%= action %>?page=<%= Math.ceil(totalItems / pageSize) %>&pageSize=<%= pageSize %>&sort_by=<%= sort_by %>&order=<%= order %>&filter=<%= filter %>" class="rounded-md px-3 py-1  text-gray-700 hover:bg-gray-100  dark:text-gray-300 dark:hover:bg-gray-700">
+            <i class="fas fa-angle-double-right"></i>
+        </a>
     <% } %>
 </div>

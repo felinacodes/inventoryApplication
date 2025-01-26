@@ -19,3 +19,7 @@
   background-color: currentColor; 
 }
 
+.title {
+  @apply font-serif text-primary text-4xl m-2
+}
+
