@@ -20,7 +20,9 @@ function addItem(inputId, listId, dataListId, inputName) {
     if (itemName && itemId)  {
         const li = document.createElement('li');
         li.textContent = itemName;
+        li.classList.add('selected-items');
         const button = document.createElement('button');
+        button.classList.add('selected-items-remove-item');
         button.textContent = 'x';
         button.onclick = () => li.remove();
         li.appendChild(button);

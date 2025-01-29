@@ -20,7 +20,7 @@ exports.validateMovie = [
 exports.getAllMovies = async (req, res, next) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const pageSize = parseInt(req.query.pageSize) || 10;
+        const pageSize = parseInt(req.query.pageSize) || 12;
         const { sort_by = 'title', order = 'asc', filter } = req.query;
 
         const movies = await db.getAllMovies(sort_by, order, filter, page, pageSize);
@@ -82,11 +82,12 @@ exports.getMovieById = async(req, res, next) => {
 
 
 exports.createMovie = async(req, res, next) => {
+   // console.log(req.query);
         const errors = validationResult(req);
         const page = parseInt(req.query.page) || 1;
-        const pageSize = parseInt(req.query.pageSize) || 10;
+        const pageSize = parseInt(req.query.pageSize) || 12;
         const totalMovies = await db.getMoviescount(req.body.filter);
-
+        console.log(pageSize);
         if (!errors.isEmpty()) {
              if (req.file) {
                             const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);

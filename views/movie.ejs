@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,43 +7,83 @@
     <link href="/public/css/tailwind.css" rel="stylesheet">
     <link rel="icon" href="/public/favicon.png" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
     <script src="../public/js/dark-mode-toggle.js"></script>
-    
+    <script src="/public/js/showPasswordPrompt.js"></script>
 </head>
-<body>
+<body class="flex flex-col h-full bg-background dark:bg-background-darkBG">
     <%- include('partials/navbar', {links: links}) %>
-    <h1> <%= movie.title %></h1>
-    <h5> <%= movie.year ? movie.year : 'Unkown' %></h5>
-    <img src="<%= movie.photo_url ? movie.photo_url : '/public/images/default.jpg' %>" alt="movie poster" style="width: 100px; height: 100px;">
-    <h6> <%= movie.description ? movie.description : "No Description available"  %></h6>
-    <h6> Genres:</h6>
-    <ul>
-        <% genres && genres.forEach(genre => { %>
-            <a href="/categories/<%= genre.genre_id %>"><li><%= genre.name %></li></a>
-        <% }) %>
-    </ul>
-    <h6> Actors: </h6>
-    <ul>
-        <% actors && actors.forEach(actor => { %>
-            <a href="/actors/<%= actor.actor_id %>"><li><%= actor.first_name %> <%= actor.last_name %></li></a>
-        <% }) %>
-    </ul>
+    <main class="flex-1 flex items-center flex-col p-2 m-2">
+        <h1 class="title text-center mb-2"> <%= movie.title %></h1>
+    <h5 class="font-serif font-semibold text-lg text-primary-light mb-4"> <%= movie.year ? movie.year : 'Unkown' %></h5>
+    <div class="w-full max-w-md">
+        <img src="<%= movie.photo_url ? movie.photo_url : '/public/images/default.jpg' %>" alt="movie poster" 
+        class="w-full max-h-90 object-cover rounded-md mb-4">
+    </div>
+    <h6 class="font-serif m-2  break-words hyphens-auto lg:max-w-[50%] first-letter:font-bold dark:text-white"> <%= movie.description ? movie.description : "No Description available"  %></h6>
+    <div class=" dark:text-white m-2 flex flex-col">
+        <div class="flex gap-2 items-center flex-col lg:flex-row">
+            <h6 class="text-lg font-semibold font-serif"> Genres:</h6>
+            <ul class="flex flex-wrap gap-2 font-serif">
+                <% genres && genres.forEach((genre, i) => { %>
+                    <li class="flex items-center">
+                        <a href="/categories/<%= genre.genre_id %>" class="hover:underline hover:text-primary-dark">
+                            <%= genre.name %>
+                        </a>
+                        <% if (i < genres.length - 1) { %>
+                            <span>,</span>
+                        <% } %>
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+        <div class="mt-4 flex flex-col gap-2 items-center lg:flex-row">
+            <h6 class="text-lg font-semibold font-serif"> Actors: </h6>
+            <ul class="flex flex-wrap gap-2 font-serif">
+                <% actors && actors.forEach((actor, i) => { %>
+                    <li class="flex items-center">
+                        <a href="/actors/<%= actor.actor_id %>" class="hover:underline hover:text-primary-dark">
+                            <%= actor.first_name %> <%= actor.last_name %>
+                        </a>
+                        <% if (i < actors.length - 1) { %>
+                            <span>,</span>
+                        <% } %>
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+        
+        <div class="mt-4 flex flex-col gap-2 items-center lg:flex-row">
+            <h6 class="text-lg font-semibold font-serif"> Directors: </h6>
+            <ul class="flex flex-wrap gap-2 font-serif">
+                <% directors && directors.forEach((director, i) => { %>
+                    <li class="flex items-center">
+                        <a href="/directors/<%= director.director_id %>" class="hover:underline hover:text-primary-dark">
+                            <%= director.first_name %> <%= director.last_name %>
+                        </a>
+                        <% if (i < directors.length - 1) { %>
+                            <span>,</span>
+                        <% } %>
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+    </div>
+    <div class="w-full justify-center items-center mt-2">
+        <%- include('partials/updateDelete', { 
+            action: `/movies/${movie.id}` 
+        }) %>
+    </div>
+   
 
-    <h6> Directors: </h6>
-    <ul>
-        <% directors && directors.forEach(director => { %>
-            <a href="/directors/<%= director.director_id %>"><li><%= director.first_name %> <%= director.last_name %></li></a>
-        <% }) %>
-    </ul>
-
-    <a href="/movies/<%= movie.id %>/update">Update</a>
+    <!-- <a href="/movies/<%= movie.id %>/update">Update</a>
     <form action="/movies/<%= movie.id %>/delete" method="POST">
          <button type="button" onclick="showPasswordPrompt()">Delete</button>
          <%- include('partials/passwordPrompt') %>
-    </form>
-  
-    <script src="/public/js/showPasswordPrompt.js"></script>
+    </form> -->
+    </main>
+    
+    <%- include('partials/footer') %>
+    
     
 </body>
 </html>

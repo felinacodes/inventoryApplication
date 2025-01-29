@@ -1,14 +1,14 @@
-<div class="flex justify-center items-center gap-5 dark:text-white">
-    <!-- <a href="/categories/<%= genre.id %>/update" class="hover:text-primary-dark">Update -->
-        <!-- action: `/categories/${genre.id}`  -->
-        <a href="<%= action %>/update" class="hover:text-primary-dark">Update
-            <i class="fa-solid fa-pen ml-2"></i>
-        </a>
-        <form action="<%= action %>/delete" method="POST" class="flex p-2">
-                <button type="button" onclick="togglePasswordPrompt()" class="hover:text-primary-dark">Delete
-                    <i class="fa-solid fa-trash ml-2 mr-4"></i>
-                </button>
-                <%- include('passwordPrompt') %>
-        </form>
-        </div>  
+
+         <div class="flex justify-center items-center dark:text-white mb-5 flex-wrap">
+            <a href="<%= action %>/update" class="hover:text-primary-dark mr-4">Update
+                <i class="fa-solid fa-pen ml-2"></i>
+            </a>
+            <form action="<%= action %>/delete" method="POST" class="flex flex-wrap justify-center items-center">
+                    <button type="button" onclick="togglePasswordPrompt()" class="hover:text-primary-dark">Delete
+                        <i class="fa-solid fa-trash ml-2 mr-4"></i>
+                    </button>
+                        <%- include('passwordPrompt') %>                       
+            </form>   
+         </div>
+        
         

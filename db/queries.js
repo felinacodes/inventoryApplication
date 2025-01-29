@@ -42,7 +42,7 @@ async function deleteCategory(id) {
     await pool.query('DELETE FROM genres WHERE id = $1', [id]);
 }
 
-async function getAllActors(sort_by = 'first_name', order = 'asc', filter, page = 1, pageSize = 10) {
+async function getAllActors(sort_by = 'first_name', order = 'asc', filter, page = 1, pageSize = 12) {
     const offset = (page - 1) * pageSize;
     let query = 'SELECT * FROM actors';
     const queryParams = [];
@@ -108,7 +108,7 @@ async function deleteActor(id) {
     await pool.query('DELETE FROM actors WHERE id = $1', [id]);
 }
 
-async function getAllDirectors(sort_by = 'first_name', order = 'asc', filter, page = 1, pageSize = 10) {
+async function getAllDirectors(sort_by = 'first_name', order = 'asc', filter, page = 1, pageSize = 12) {
     const offset = (page - 1) * pageSize;
     let query = 'SELECT * FROM directors';
     const queryParams = [];
@@ -172,7 +172,7 @@ async function deleteDirector(id) {
     await pool.query('DELETE FROM directors WHERE id = $1', [id]);
 }
 
-async function getAllMovies(sort_by = 'title', order = 'asc', filter, page = 1, pageSize = 10) {
+async function getAllMovies(sort_by = 'title', order = 'asc', filter, page = 1, pageSize = 12) {
     const offset = (page - 1) * pageSize;
     let query = 'SELECT * FROM movies';
     const queryParams = [];
@@ -338,7 +338,7 @@ async function deleteMovie(movie_id) {
     await pool.query('DELETE FROM movies WHERE id = $1', [movie_id]);
 }
 
-async function getAllMoviesByGenre(genre_id, sort_by = 'title', order = 'asc', filter, page = 1, pageSize = 10) {
+async function getAllMoviesByGenre(genre_id, sort_by = 'title', order = 'asc', filter, page = 1, pageSize = 12) {
     const offset = (page - 1) * pageSize;
     let query = 'SELECT * FROM movies m JOIN movie_genres mg ON m.id = mg.movie_id WHERE mg.genre_id = $1';
     const queryParams = [genre_id];

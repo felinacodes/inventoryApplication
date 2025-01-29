@@ -19,7 +19,34 @@
   background-color: currentColor; 
 }
 
+.selected-items {
+  @apply inline-block m-1 p-2 bg-gray-200 dark:bg-gray-700 rounded-full dark:text-white;
+}
+
+.selected-items-remove-item {
+  @apply ml-2 bg-red-500 text-white border-none rounded-full cursor-pointer px-2 text-center hover:bg-red-700;
+}
+
+.selected-items-remove-item:only-child {
+  @apply text-center;
+}
+
 .title {
   @apply font-serif text-primary text-4xl m-2
 }
 
+.customInput {
+  @apply px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 font-serif border border-gray-300
+}
+
+.customBtn {
+  @apply ml-2 px-4 py-1 bg-primary-dark text-white rounded font-serif hover:bg-secondary
+}
+
+.inputLabel {
+  @apply text-primary-dark font-semibold mr-2
+}
+
+.addIconBtn {
+  @apply  text-primary-dark hover:text-secondary
+}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +9,28 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     
     <script src="/public/js/dark-mode-toggle.js"></script>
+   
 </head>
-<body class="dark:bg-red-500">
+<body class="flex flex-col h-full bg-background dark:bg-background-darkBG">
     <%- include('partials/navbar', {links: links}) %>
-    <h1>Update Genre</h1>
-    <%- include('./partials/errors') %>
-    <form action="/categories/<%= genre.id %>/update" method="POST">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="<%= genre.name %>">
-        <button type="button" onclick="showPasswordPrompt()">Update Genre</button>
-        <%- include('partials/passwordPrompt') %>
-    </form>
+    <main class="flex-1 flex items-center flex-col p-2 m-2">
+        <h1 class="title">Update Genre</h1>
+        <%- include('./partials/errors') %>
+        <form action="/categories/<%= genre.id %>/update" method="POST" class="mt-4">
+            <label for="name" class="text-primary-dark font-semibold mr-2">Name:*</label>
+            <input type="text" id="name" name="name" value="<%= genre.name %>"
+            class="px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-300 font-serif border border-gray-300">
+            <button type="button" onclick="togglePasswordPrompt()" class="ml-4">
+                <i class="fa-solid fa-pen text-primary-dark hover:text-secondary"></i>
+            </button>  
+            <div class="mt-4 text-md text-primary-dark font-serif font-semibold">
+                <%- include('partials/passwordPrompt') %>
+            </div>
+        </form>
+        
+    </main>
     
+    <%- include('partials/footer') %>
     <script src="/public/js/showPasswordPrompt.js"></script>
 </body>
 </html>

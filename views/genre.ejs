@@ -7,16 +7,18 @@
     <link href="/public/css/tailwind.css" rel="stylesheet">
     <link rel="icon" href="/public/favicon.png" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
+
     <script src="../public/js/dark-mode-toggle.js"></script>
 </head>
 <body class="flex flex-col h-full bg-background dark:bg-background-darkBG">
     <%- include('partials/navbar', {links: links}) %>
     <main class="flex-1 flex  items-center flex-col p-2 m-2 ">
         <h1 class="title"> <%= genre.name %></h1>
-        <%- include('partials/updateDelete', { 
-            action: `/categories/${genre.id}` 
-        }) %>
+        <div class="w-full justify-center items-center">
+            <%- include('partials/updateDelete', { 
+                action: `/categories/${genre.id}` 
+            }) %>
+        </div>  
         <div>
             <%- include('partials/sortFilter', { 
                 action: `/categories/${genre.id}`, 
@@ -37,7 +39,7 @@
                     link: '/movies',
                     imgSrc: 'photo_url',
                     title: 'title',
-                    id: 'movie_id'
+                    
                 }) %>
             </div>
            
