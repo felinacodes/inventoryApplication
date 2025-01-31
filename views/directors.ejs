@@ -69,17 +69,7 @@
                 }) %>
             </div>
             <h1 class="title">Directors List</h1>
-        <!-- <ul>
-            <% directors.forEach(director => { %>
-                <li><%= director.first_name %> <%= director.last_name %>
-                    <%= director.gender %>
-                    <img src="<%= director.photo_url ? director.photo_url : '/public/images/default.jpg' %>" alt="director photo" style="width: 100px; height: 100px;">
-                    <a href="/directors/<%= director.id %>">View</a>
-                </li>
-            <% }) %>
-    
-           
-        </ul> -->
+       
         <div class="w-full h-full flex flex-col items-center justify-between">
             <div class="w-full">
                 <%- include('partials/peopleList', {

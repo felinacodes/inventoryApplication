@@ -5,16 +5,14 @@ function addItem(inputId, listId, dataListId, inputName) {
     const itemOption = document.querySelector(`#${dataListId} option[value="${itemName}"]`);
     
     if (!itemOption) {
-        // alert('Please select a valid item from the list.');
-        return; // Exits the function if the item is not valid
+        return; 
     }
 
     const itemId = itemOption.dataset.id;
 
     // Check if the item is already selected
     if (document.querySelector(`#${listId} input[value="${itemId}"]`)) {
-        // alert('This item is already selected.');
-        return; // Exits the function if the item is already selected
+        return; 
     }
 
     if (itemName && itemId)  {

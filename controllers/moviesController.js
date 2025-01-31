@@ -82,7 +82,6 @@ exports.getMovieById = async(req, res, next) => {
 
 
 exports.createMovie = async(req, res, next) => {
-   // console.log(req.query);
         const errors = validationResult(req);
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 12;

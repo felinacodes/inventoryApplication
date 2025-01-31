@@ -42,7 +42,6 @@ app.get('*', (req, res, next) => {
             link.selected = false;
         }
     });
-    // console.log(currentUrl);
     next();
 })
 
@@ -131,21 +130,4 @@ app.listen(PORT, () => {
 
 module.exports = app;
 
-/*
-TODO: //
-* 3. Style. =>
-    1. index
-    2. categories
-    3. movies
-    4. actors
-    5. directors
-    6. search
-    7. update categories
-    8. update movies
-    9. update actors
-    10. update directors 
-    12. footer
-? 4. Fix db false info. 
-? 5. Add documentation.
-! 6. Deploy.
-*/
+
