@@ -1,0 +1,17 @@
+<ul class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 
+mt-4 w-full xl:w-3/5 mx-auto max-sm:w-3/5">
+            <% elements && elements.forEach(el => { %>
+                <li class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow hover:shadow-lg transition-shadow 
+                duration-300 hover:bg-gray-100 dark:hover:bg-gray-700
+                 ">
+                    <a href="/<%= link %>/<%= el.id %>" class="block text-center">
+                             <img src="<%= el.photo_url ? el.photo_url : '/public/images/default.jpg' %>" 
+                              class="w-full h-60 object-cover rounded-md mb-2">
+                        
+                        <h3 class="text-lg font-semibold text-primary-dark mt-2"><%= el.first_name %> <%= el.last_name %> </h3>
+                    </a>
+                </li>
+            <% }) %>
+        </ul>
+
+     

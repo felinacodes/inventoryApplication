@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,52 +11,58 @@
     <script src="../public/js/dark-mode-toggle.js"></script>
     
 </head>
-<body>
+<body body class="flex flex-col h-full bg-background dark:bg-background-darkBG">
     <%- include('navbar', {links: links}) %>
-    <%- include('errors') %>
-    <h1>Search Results</h1>
-    <div>
-        <h2>Movies</h2>
-        <ul>
-            <% if (results) { %>
-            <% results.movies.forEach(movie => { %>
-                <li><a href="/movies/<%= movie.id %>"><%= movie.title %></a></li>
-            <% }) %>
-            <% } %>
-        </ul>
-    </div>
-    <div>
-        <h2>Actors</h2>
-        <ul>
-            <% if (results) { %>
-            <% results.actors.forEach(actor => { %>
-                <li><a href="/actors/<%= actor.id %>"><%= actor.first_name %> <%= actor.last_name %></a></li>
-            <% }) %>
-            <% } %>
-        </ul>
-    </div>
-    <div>
-        <h2>Directors</h2>
-        <ul>
-            <% if (results) { %>
-            <% results.directors.forEach(director => { %>
-                <li><a href="/directors/<%= director.id %>"><%= director.first_name %> <%= director.last_name %></a></li>
-            <% }) %>
-            <% } %>
-        </ul>
-    </div>
-    <div>
-        <h2>Genres</h2>
-        <ul>
-            <% if (results) { %>
-            <% results.genres.forEach(genre => { %>
-                <li><a href="/genres/<%= genre.id %>"><%= genre.name %></a></li>
-            <% }) %>
-            <% } %>
-        </ul>
-    </div>
-
+    <main class="flex-1 flex items-center flex-col p-2 m-2">
+            <%- include('errors') %>
+        <h1 class="title">Search Results</h1>
+        <div class=" dark:text-white">
+            <div class="flex flex-col items-center justify-center">
+                <h2 class="text-xl font-semibold font-serif ">Movies:</h2>
+                <ul>
+                    <% if (results) { %>
+                    <% results.movies.forEach(movie => { %>
+                        <li class="hover:underline hover:text-primary-dark"><a href="/movies/<%= movie.id %>"><%= movie.title %></a></li>
+                    <% }) %>
+                    <% } %>
+                </ul>
+            </div>
     
+            <div class="flex flex-col items-center justify-center">
+                <h2 class="text-xl font-semibold font-serif ">Actors:</h2>
+                <ul>
+                    <% if (results) { %>
+                    <% results.actors.forEach(actor => { %>
+                        <li class="hover:underline hover:text-primary-dark"><a href="/actors/<%= actor.id %>" ><%= actor.first_name %> <%= actor.last_name %></a></li>
+                    <% }) %>
+                    <% } %>
+                </ul>
+                </div>
+               
     
+            <div class="flex flex-col items-center justify-center">
+                <h2 class="text-xl font-semibold font-serif ">Directors:</h2>
+                <ul>
+                    <% if (results) { %>
+                    <% results.directors.forEach(director => { %>
+                        <li class="hover:underline hover:text-primary-dark"><a href="/directors/<%= director.id %>"><%= director.first_name %> <%= director.last_name %></a></li>
+                    <% }) %>
+                    <% } %>
+                </ul>
+            </div>
+            <div  class="flex flex-col items-center justify-center">
+                <h2 class="text-xl font-semibold font-serif ">Genres:</h2>
+                <ul>
+                    <% if (results) { %>
+                    <% results.genres.forEach(genre => { %>
+                        <li class="hover:underline hover:text-primary-dark"><a href="/categories/<%= genre.id %>"><%= genre.name %></a></li>
+                    <% }) %>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+        
+    </main>
+    <%- include('footer') %>   
 </body>
 </html>

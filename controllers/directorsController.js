@@ -6,16 +6,16 @@ const path = require("path");
 const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
 const { deleteFile } = require("../utils/deleteFile");
 
-const alphaErr = "Must only contain letters.";
-const lengthErr = "Must be between 1 and 20 characters.";
+const alphaErr = "must only contain letters.";
+const lengthErr = "must be between 1 and 20 characters.";
 
 exports.validateDirector = [
     body("f_name").trim().escape()
-        .isAlpha().withMessage(alphaErr)
-        .isLength({ min: 1, max: 20 }).withMessage(lengthErr),
+        .isAlpha().withMessage(`First name ${alphaErr}`)
+        .isLength({ min: 1, max: 20 }).withMessage(`First name ${lengthErr}`),
     body("l_name").trim().escape()
-        .isAlpha().withMessage(alphaErr)
-        .isLength({ min: 1, max: 20 }).withMessage(lengthErr),
+        .isAlpha().withMessage(`Last name ${alphaErr}`)
+        .isLength({ min: 1, max: 20 }).withMessage(`Last name ${lengthErr}`),
         body("birth_date").optional({ checkFalsy: true }).isDate().withMessage("Invalid date format")
         .custom((value, { req }) => {
             const currentDate = new Date().toISOString().split('T')[0];
@@ -45,7 +45,7 @@ exports.validateDirector = [
 
 exports.getAllDirectors = async(req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 10;
+    const pageSize = parseInt(req.query.pageSize) || 12;
 
     const { sort_by = 'first_name', order = 'asc', filter } = req.query;
     const directors = await db.getAllDirectors(sort_by, order, filter, page, pageSize);
@@ -84,7 +84,7 @@ exports.getDirectorById = async(req, res, next) => {
 exports.createDirector = async(req, res) => {
          const errors = validationResult(req);
          const page = parseInt(req.query.page) || 1;
-         const pageSize = parseInt(req.query.pageSize) || 10;
+         const pageSize = parseInt(req.query.pageSize) || 12;
          const totalDirectors = await db.getDirectorsCount(req.body.filter);
         if (!errors.isEmpty()) {
             if (req.file) {

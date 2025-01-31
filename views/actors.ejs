@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,75 +10,92 @@
 
     <script src="../public/js/dark-mode-toggle.js"></script>
     <script src="../public/js/toggle-add.js"></script>
+    <script src="../public/js/addItem.js"></script>
 </head>
-<body>
+<body class="flex flex-col h-full bg-background dark:bg-background-darkBG">
     <%- include('partials/navbar', {links: links}) %>
-    <h1>Actors List</h1>
-    <%- include('partials/errors') %>
-    <div>
-        <!-- <button id="toggle-form-button" onclick="toggleForm(this)" >Add a new Actor</button> -->
-        <%- include('partials/addBtn')%>
-        <form action="/actors" method="POST" enctype="multipart/form-data" class="add-genre-form hidden">
-            <label for="f_name">First Name:</label>
-            <input type="text" id="f_name" name="f_name">
-            <label for="l_name">Last Name:</label>
-            <input type="text" id="l_name" name="l_name">
-            <label for="gender">Gender:</label>
-            <select id="gender" name="gender">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-            </select>
-            <label for="birth_date"> Birth Date: </label>
-            <input type="date" id="birth_date" name="birth_date">
-    
-            <label for="death_date"> Death Date: (leave it empty if alive)</label>
-            <input type="date" id="death_date" name="death_date">
-    
-            <label for="photo">Photo:</label>
-            <input type="file" id="photo" name="photo">
-            <button type="submit">Add Actor</button>
-        </form>
-    </div>
-  
+    <main class="flex-1 flex items-center flex-col p-2 m-2">   
+            <%- include('partials/errors') %>
+            <%- include('partials/addBtn')%>
+            <form action="/actors" method="POST" enctype="multipart/form-data" class="add-form <%= locals.formOpen ? '' : 'hidden' %>
+                flex flex-col flex-wrap justify-between items-start m-2 gap-3">
+                <div>   
+                    <label for="f_name" class="inputLabel">First Name:*</label>
+                    <input type="text" id="f_name" name="f_name" class="customInput">
+                </div>
+                <div>
+                    <label for="l_name" class="inputLabel">Last Name:*</label>
+                    <input type="text" id="l_name" name="l_name" class="customInput">
+                </div>
+                <div>
+                    <label for="gender" class="inputLabel">Gender:</label>
+                    <select id="gender" name="gender" class="customInput">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="birth_date" class="inputLabel"> Birth Date: </label>
+                    <input type="date" id="birth_date" name="birth_date" class="customInput">
+                </div>
+                <div>
+                    <label for="death_date" class="inputLabel"> Death Date: (leave it empty if alive)</label>
+                    <input type="date" id="death_date" name="death_date" class="customInput">
+                </div>
+                <div>
+                    <label for="photo" class="inputLabel">Photo:</label>
+                    <input type="file" id="photo" name="photo" class="file:mr-4 file:rounded-full file:border-0
+                    file:bg-orange-200 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black
+                     hover:file:bg-orange-300 dark:text-white">
+                </div> 
+                <button type="submit" class="customBtn self-center">Add Actor</button >          
+            </form>       
+        <div>
+            <%- include('partials/sortFilter', { 
+                action: '/actors', 
+                sort_by: sort_by, 
+                order: order, 
+                filter: filter,
+                sortOptions: [
+                { value: 'full_name', text: 'Name' }, 
+                { value: 'age', text: 'Age' },
+                ],
+            filterOptions: [
+                'Male',
+                'Female'
+            ]
+                
+            }) %>
+        </div>
+        <h1 class="title">Actors List</h1>
+        <!-- <ul>
+            <% actors.forEach(actor => { %>
+                <li><%= actor.first_name %> <%= actor.last_name %>
+                    <%= actor.gender %>
+                    <img src="<%= actor.photo_url ? actor.photo_url : '/public/images/default.jpg' %>" alt="actor photo" style="width: 100px; height: 100px;">
+                    <a href="/actors/<%= actor.id %>">View</a>
+                </li>
+            <% }) %>
+        </ul> -->
+        <div class="w-full h-full flex flex-col items-center justify-between">
+            <div class="w-full">
+                <%- include('partials/peopleList', {
+                    elements: actors,
+                    link: 'actors'
+                }) %>
+            </div>
+        </div>
 
-    <div>
-        <%- include('partials/sortFilter', { 
-            action: '/actors', 
-            sort_by: sort_by, 
-            order: order, 
+        <%- include('partials/pagination', {
+            action: '/actors',
+            page: page,
+            pageSize: pageSize,
+            sort_by: sort_by,
+            order: order,
             filter: filter,
-            sortOptions: [
-            { value: 'full_name', text: 'Name' }, 
-            { value: 'age', text: 'Age' },
-            ],
-        filterOptions: [
-            'Male',
-            'Female'
-        ]
-            
+            totalItems: totalActors
         }) %>
-    </div>
-
-    <ul>
-        <% actors.forEach(actor => { %>
-            <li><%= actor.first_name %> <%= actor.last_name %>
-                <%= actor.gender %>
-                <img src="<%= actor.photo_url ? actor.photo_url : '/public/images/default.jpg' %>" alt="actor photo" style="width: 100px; height: 100px;">
-                <a href="/actors/<%= actor.id %>">View</a>
-            </li>
-        <% }) %>
-    </ul>
-
-    <%- include('partials/pagination', {
-        action: '/actors',
-        page: page,
-        pageSize: pageSize,
-        sort_by: sort_by,
-        order: order,
-        filter: filter,
-        totalItems: totalActors
-    }) %>
-
-    
+    </main>
+    <%- include('partials/footer') %>
 </body>
 </html>

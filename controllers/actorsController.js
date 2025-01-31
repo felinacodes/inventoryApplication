@@ -47,7 +47,7 @@ exports.validateActor = [
 
 exports.getAllActors = async(req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 10;
+    const pageSize = parseInt(req.query.pageSize) || 12;
 
     const { sort_by = 'first_name', order = 'asc', filter } = req.query;
     const actors = await db.getAllActors(sort_by, order, filter, page, pageSize);
@@ -90,7 +90,7 @@ exports.getActorById = async(req, res, next) => {
 exports.createActor = async(req, res) => {
          const errors = validationResult(req);
          const page = parseInt(req.query.page) || 1;
-         const pageSize = parseInt(req.query.pageSize) || 10;
+         const pageSize = parseInt(req.query.pageSize) || 12;
          const totalActors = await db.getActorsCount(req.body.filter);
 
         if (!errors.isEmpty()) {

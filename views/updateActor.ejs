@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,41 +8,57 @@
     <link rel="icon" href="/public/favicon.png" type="image/png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     
-    <script src="../public/js/dark-mode-toggle.js"></script>
-</head>
-<body>
-    <%- include('partials/navbar', {links: links}) %>
-    <h1>Update Actor</h1>
-    <%- include('partials/errors') %>
-    <form action="/actors/<%= actor.id %>/update" method="POST" enctype="multipart/form-data">
-        <label for="f_name">First Name:</label>
-        <input type="text" id="f_name" name="f_name" value="<%= actor.first_name %>">
-        <label for="l_name">Last Name:</label>
-        <input type="text" id="l_name" name="l_name" value="<%= actor.last_name %>">
-        <label for="gender">Gender:</label>
-        <select id="gender" name="gender">
-            <option value="Male" <%= actor.gender === 'Male' ? 'selected' : '' %>>Male</option>
-            <option value="Female" <%= actor.gender === 'Female' ? 'selected' : '' %>>Female</option>
-        </select>
-        <label for="birth_date"> Birth Date: </label>
-        <input type="date" id="birth_date" name="birth_date" value="<%= actor.birth_date ? actor.birth_date.toISOString().split('T')[0] : '' %>">
-
-        <label for="death_date"> Death Date: (leave it empty if alive)</label>
-        <input type="date" id="death_date" name="death_date" value="<%= actor.death_date ? actor.death_date.toISOString().split('T')[0] : '' %>">
-        
-        <label for="photo">Photo:</label>
-        <img id="photoPreview"
-        src="<%= actor.photo_url ? actor.photo_url : '/public/images/default.jpg' %>" 
-        alt="Actor's Photo" 
-        width="100"
-        height="100"
-        />
-        <input type="file" id="photo" name="photo">
-        <button type="button" onclick="showPasswordPrompt()">Update Movie</button>
-        <%- include('partials/passwordPrompt') %>
-    </form>
-    
+    <script src="/public/js/dark-mode-toggle.js"></script>
     <script src="/public/js/photoPreview.js"></script>
     <script src="/public/js/showPasswordPrompt.js"></script>
+</head>
+<body class="flex flex-col h-full bg-background dark:bg-background-darkBG">
+    <%- include('partials/navbar', {links: links}) %>
+    <main class="flex-1 flex items-center flex-col p-2 m-2">
+        <h1 class="title">Update Actor</h1>
+        <%- include('partials/errors') %>
+        <form action="/actors/<%= actor.id %>/update" method="POST" enctype="multipart/form-data"
+            class="flex flex-col flex-wrap justify-between items-start m-2 gap-3">
+            <div class="mt-2">
+                <label for="f_name" class="inputLabel" class="inputLabel">First Name:*</label>
+                <input type="text" id="f_name" name="f_name" value="<%= actor.first_name %>" class="customInput">
+            </div>
+            <div>
+                <label for="l_name" class="inputLabel">Last Name:*</label>
+                <input type="text" id="l_name" name="l_name" value="<%= actor.last_name %>" class="customInput">
+            </div>
+            <div>
+                <label for="gender" class="inputLabel">Gender:</label>
+                <select id="gender" name="gender" class="customInput">
+                    <option value="Male" <%= actor.gender === 'Male' ? 'selected' : '' %>>Male</option>
+                    <option value="Female" <%= actor.gender === 'Female' ? 'selected' : '' %>>Female</option>
+                </select>
+            </div>
+          <div>
+            <label for="birth_date" class="inputLabel"> Birth Date: </label>
+            <input type="date" id="birth_date" name="birth_date" value="<%= actor.birth_date ? actor.birth_date.toISOString().split('T')[0] : '' %>" class="customInput">
+          </div>
+          <div>
+            <label for="death_date" class="inputLabel"> Death Date: (leave it empty if alive)</label>
+            <input type="date" id="death_date" name="death_date" value="<%= actor.death_date ? actor.death_date.toISOString().split('T')[0] : '' %>" class="customInput">
+          </div>
+          <div class="flex flex-wrap gap-4">
+            <label for="photo" class="inputLabel">Photo:</label>
+            <img id="photoPreview"
+            src="<%= actor.photo_url ? actor.photo_url : '/public/images/default.jpg' %>" 
+            alt="Actor's Photo" 
+            width="100"
+            height="100"
+            />
+            <input type="file" id="photo" name="photo" class="file:mr-4 file:rounded-full file:border-0
+            file:bg-orange-200 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black
+             hover:file:bg-orange-300 dark:text-white">
+          </div>
+            <button type="button" onclick="togglePasswordPrompt()" class="customBtn self-center">Update Movie</button>
+            <%- include('partials/passwordPrompt') %>
+        </form>
+    </main>
+    <%- include('partials/footer') %> 
+
 </body>
 </html>

@@ -17,7 +17,7 @@
         <%- include('partials/errors') %>
         <%- include('partials/addBtn')%>
         <form action="/movies" method="POST" enctype="multipart/form-data" class="add-form <%= locals.formOpen ? '' : 'hidden' %>
-            flex flex-col flex-wrap justify-between items-center m-2 gap-3">
+            flex flex-col flex-wrap justify-between items-start m-2 gap-3">
             <div>
                 <label for="title" class="inputLabel">Title:*</label>
                 <input type="text" id="title" name="title" class="customInput">
@@ -75,7 +75,7 @@
                  file:bg-orange-200 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black
                   hover:file:bg-orange-300 dark:text-white">   
             </div> 
-            <button type="submit" class="customBtn">Add Movie</button>
+            <button type="submit" class="customBtn self-center">Add Movie</button>
             </form>
         <div>
             <%- include('partials/sortFilter', { 
