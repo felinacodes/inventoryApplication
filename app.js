@@ -93,9 +93,9 @@ process.on('unhandledRejection', (reason, promise) => {
     //restart the server or perform other recovery actions
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.APP_PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${APP_PORT}`);
 });
 
 // // Graceful shutdown
