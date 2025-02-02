@@ -1,5 +1,6 @@
 const { Client } = require('pg');
 require('dotenv').config();
+console.log(process.env.DATABASE);
 const path = require("path");
 // require('dotenv').config({
 //     path: `.env.${process.env.NODE_ENV || 'development'}`
@@ -322,10 +323,16 @@ VALUES
 
 async function main() {
     console.log("seeding...");
-  
+    console.log(process.env.HOST);
+    console.log(process.env.USER);
+    console.log(process.env.DATABASE);
+    console.log(process.env.PASSWORD);
+    console.log(process.env.PORT);
+
     const client = new Client({
       host: process.env.HOST,
-      user: process.env.USER,
+    //   user: process.env.USER,
+      user: 'postgres',
       database: process.env.DATABASE,
       password: process.env.PASSWORD,
       port: process.env.PORT,
