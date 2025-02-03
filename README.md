@@ -14,6 +14,7 @@ Technologies used
 - NodeJS
 - EJS
 - Tailwind
+- PostGreSQL
 
 Installation
 ---------
