@@ -1,7 +1,7 @@
 const browserSync = require('browser-sync').create();
 
 browserSync.init({
-  proxy: "http://localhost:3072", 
+  proxy: "http://localhost:3074", 
   files: ["public/css/*.css", 
           "views/**/*.ejs"], 
   reloadDelay: 1000, 
