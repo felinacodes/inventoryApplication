@@ -1,6 +1,8 @@
 const multer = require('multer');
 const path = require('path');
 const crypto = require('crypto');
+const cloudinary = require('cloudinary').v2;
+
 
 // Set storage engine
 // const storage = multer.diskStorage({
