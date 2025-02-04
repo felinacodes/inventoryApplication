@@ -1,14 +1,15 @@
 {
  "scripts": {
-    "build:css": "npx postcss src/styles/tailwind.css -o public/css/tailwind.css",
-    "watch:css": "npx postcss src/styles/tailwind.css -o public/css/tailwind.css --watch",
-    "start": "node app.js",
-    "watch:server": "nodemon",
-    "browser-sync": "node bs-config.js",
-    "dev": "npx npm-run-all --parallel watch:css watch:server browser-sync"
+  "build:css": "npx postcss src/styles/tailwind.css -o public/css/tailwind.css",
+  "watch:css": "npx postcss src/styles/tailwind.css -o public/css/tailwind.css --watch",
+  "start": "node app.js",
+  "watch:server": "nodemon",
+  "browser-sync": "node bs-config.js",
+  "dev": "npx npm-run-all --parallel watch:css watch:server browser-sync"
  },
  "dependencies": {
   "autoprefixer": "^10.4.20",
+  "cloudinary": "^1.41.3",
   "crypto": "^1.0.1",
   "dotenv": "^16.4.7",
   "ejs": "^3.1.10",
@@ -16,6 +17,7 @@
   "express-async-handler": "^1.2.0",
   "express-validator": "^7.2.1",
   "multer": "^1.4.5-lts.1",
+  "multer-storage-cloudinary": "^4.0.0",
   "pg": "^8.13.1",
   "postcss": "^8.5.1",
   "tailwindcss": "^3.4.17"
@@ -31,5 +33,5 @@
  "engines": {
   "node": "18",
   "npm": "9"
-}
+ }
 }

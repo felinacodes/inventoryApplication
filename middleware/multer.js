@@ -3,14 +3,32 @@ const path = require('path');
 const crypto = require('crypto');
 
 // Set storage engine
-const storage = multer.diskStorage({
-    destination: './public/uploads/',
-    filename: function(req, file, cb) {
-        console.log('Processing file:', file.originalname); // Debugging line
-        const sanitizedFilename = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-        const uniqueSuffix = Date.now() + '-' + crypto.randomBytes(4).toString('hex');
-        // cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(sanitizedFilename));
+// const storage = multer.diskStorage({
+//     destination: './public/uploads/',
+//     filename: function(req, file, cb) {
+//         console.log('Processing file:', file.originalname); // Debugging line
+//         const sanitizedFilename = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+//         const uniqueSuffix = Date.now() + '-' + crypto.randomBytes(4).toString('hex');
+//         // cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+//         cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(sanitizedFilename));
+//     }
+// });
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'uploads',
+        format: async (req, file) => 'png', 
+        public_id: (req, file) => {
+            const sanitizedFilename = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
+            const uniqueSuffix = Date.now() + '-' + crypto.randomBytes(4).toString('hex');
+            return file.fieldname + '-' + uniqueSuffix + path.extname(sanitizedFilename);
+        }
     }
 });
 
