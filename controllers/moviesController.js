@@ -5,6 +5,7 @@ const path = require("path");
 const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
 const { deleteFile } = require("../utils/deleteFile");
 const lengthErr = "Title must be between 1 and 50 characters.";
+const cloudinary = require('cloudinary').v2;
 
 
 exports.validateMovie = [
@@ -89,12 +90,21 @@ exports.createMovie = async(req, res, next) => {
         console.log(pageSize);
         if (!errors.isEmpty()) {
              if (req.file) {
-                            const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                            fs.unlink(photoPath, (err) => {
-                                if (err) {
-                                    console.error(`Error deleting file: ${photoPath}`, err);
-                                }
-                            });
+                            // const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
+                            // fs.unlink(photoPath, (err) => {
+                            //     if (err) {
+                            //         console.error(`Error deleting file: ${photoPath}`, err);
+                            //     }
+                            // });
+                            const publicId = req.file.public_id;
+                            cloudinary.uploader.destroy(publicId, (error, result) => {
+                            if (error) {
+                                console.error(`Error deleting Cloudinary image: ${publicId}`, error);
+                            } else {
+                                console.log(`Deleted Cloudinary image: ${publicId}`);
+                            }
+                        });
+
                         }
 
             const movies = await db.getAllMovies();
@@ -122,7 +132,8 @@ exports.createMovie = async(req, res, next) => {
                 totalMovies,
             });
         }
-        const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
+        // const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
+        const photoUrl = req.file ? req.file.path : null;
         const { title, year, description, genre, actors, directors } = req.body;
         const movieID = await db.addMovie(
             title || null,
@@ -190,12 +201,20 @@ exports.updateMoviePost = async(req,res) => {
         if (!errors.isEmpty()) {
             
              if (req.file) {
-                            const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                            fs.unlink(photoPath, (err) => {
-                                if (err) {
-                                    console.error(`Error deleting file: ${photoPath}`, err);
-                                }
-                            });
+                            // const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
+                            // fs.unlink(photoPath, (err) => {
+                            //     if (err) {
+                            //         console.error(`Error deleting file: ${photoPath}`, err);
+                            //     }
+                            // });
+                            const publicId = req.file.public_id;
+                            cloudinary.uploader.destroy(publicId, (error, result) => {
+                            if (error) {
+                                console.error(`Error deleting Cloudinary image: ${publicId}`, error);
+                            } else {
+                                console.log(`Deleted Cloudinary image: ${publicId}`);
+                            }
+                        });
                         }
 
             const genres = await db.getAllCategories();
@@ -213,11 +232,26 @@ exports.updateMoviePost = async(req,res) => {
                     errors: errors.array()
                 });
         }
-        let photoUrl = movie.photo_url;
-        if (req.file) {
-            deleteFile(photoUrl);
-            photoUrl = `/public/uploads/${req.file.filename}`;
+        // let photoUrl = movie.photo_url;
+        // if (req.file) {
+        //     deleteFile(photoUrl);
+        //     photoUrl = `/public/uploads/${req.file.filename}`;
+        // }
+            if (req.file) {
+                // Delete the old image from Cloudinary
+                const oldPublicId = movie.photoUrl.split('/').pop().split('.')[0];
+                cloudinary.uploader.destroy(oldPublicId, (error, result) => {
+                    if (error) {
+                        console.error(`Error deleting old Cloudinary image: ${oldPublicId}`, error);
+                    } else {
+                        console.log(`Deleted old Cloudinary image: ${oldPublicId}`);
+                    }
+                });
+
+                // Update the photo URL with the new Cloudinary URL
+                movie.photo_url = req.file.path; // Use the Cloudinary URL
         }
+            
         const { title, year, description, genre, actors, directors } = req.body;
         await db.updateMovie(req.params.id, title, year, description, photoUrl);
 
@@ -254,7 +288,15 @@ exports.updateMoviePost = async(req,res) => {
 exports.deleteMovie = async(req, res, next) => {
     const movie = await db.getMovieById(req.params.id);
     if (movie.photo_url) {
-        deleteFile(movie.photo_url);
+        // deleteFile(movie.photo_url);
+        const publicId = movie.photo_url.split('/').pop().split('.')[0];
+        cloudinary.uploader.destroy(publicId, (error, result) => {
+            if (error) {
+                console.error(`Error deleting old Cloudinary image: ${publicId}`, error);
+            } else {
+                console.log(`Deleted old Cloudinary image: ${publicId}`);
+            }
+        });
     }
 
     checkDataExistence(movie, next);
