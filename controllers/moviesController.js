@@ -80,96 +80,93 @@ exports.getMovieById = async(req, res, next) => {
         });
 };
 
-
 exports.createMovie = async (req, res, next) => {
-    console.log('createMovie - req.file:', req.file);
-    const errors = validationResult(req);
-    const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 12;
-    const totalMovies = await db.getMoviescount(req.body.filter);
+    try {
+        console.log('createMovie - req.file:', req.file);
+        const errors = validationResult(req);
+        const page = parseInt(req.query.page) || 1;
+        const pageSize = parseInt(req.query.pageSize) || 12;
+        const totalMovies = await db.getMoviescount(req.body.filter);
+        console.log('createMovie - pageSize:', pageSize);
 
-    if (!errors.isEmpty()) {
-        if (req.file) {
-            // Delete uploaded image from Cloudinary if validation fails
-            const publicId = req.file.public_id;
-            cloudinary.uploader.destroy(publicId, (error, result) => {
-                if (error) {
-                    console.error(`Error deleting Cloudinary image: ${publicId}`, error);
-                } else {
-                    console.log(`Deleted Cloudinary image: ${publicId}`);
-                }
+        if (!errors.isEmpty()) {
+            if (req.file) {
+                const publicId = req.file.public_id;
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                    if (error) {
+                        console.error(`Error deleting Cloudinary image: ${publicId}`, error);
+                    } else {
+                        console.log(`Deleted Cloudinary image: ${publicId}`);
+                    }
+                });
+            }
+
+            const movies = await db.getAllMovies();
+            const genres = await db.getAllCategories();
+            const directors = await db.getAllDirectors();
+            const actors = await db.getAllActors();
+            const years = await db.getAllYears();
+
+            return res.render('movies', {
+                errors: errors.array(),
+                genres,
+                directors,
+                actors,
+                movies,
+                sort_by: 'title',
+                order: 'asc',
+                filter: 'all',
+                sortOptions: [
+                    { value: 'title', text: 'Title' },
+                    { value: 'year', text: 'Year' }
+                ],
+                years, 
+                page,
+                pageSize,
+                totalMovies,
             });
         }
 
-        const movies = await db.getAllMovies();
-        const genres = await db.getAllCategories();
-        const directors = await db.getAllDirectors();
-        const actors = await db.getAllActors();
-        const years = await db.getAllYears();
+        const photoUrl = req.file ? req.file.path : null;
+        const { title, year, description, genre, actors, directors } = req.body;
+        const movieID = await db.addMovie(
+            title || null,
+            year || null,
+            description || null,
+            photoUrl
+        );
 
-        return res.render('movies', {
-            errors: errors.array(),
-            genres,
-            directors,
-            actors,
-            movies,
-            sort_by: 'title',
-            order: 'asc',
-            filter: 'all',
-            sortOptions: [
-                { value: 'title', text: 'Title' },
-                { value: 'year', text: 'Year' }
-            ],
-            years, 
-            page,
-            pageSize,
-            totalMovies,
-        });
-    }
-
-    // Upload image to Cloudinary
-    let photoUrl = null;
-    if (req.file) {
-        const cloudinaryResult = await cloudinary.uploader.upload(req.file.path);
-        photoUrl = cloudinaryResult.secure_url;
-    }
-
-    const { title, year, description, genre, actors, directors } = req.body;
-    const movieID = await db.addMovie(
-        title || null,
-        year || null,
-        description || null,
-        photoUrl
-    );
-
-    if (!movieID) {
-        throw new Error('Failed to retrieve movie ID after insertion.');
-    }
-
-    // Insert genres associations
-    if (genre && Array.isArray(genre)) {
-        for (const genreId of genre) {
-            await db.addMovieGenre(movieID.id, genreId);
+        if (!movieID) {
+            throw new Error('Failed to retrieve movie ID after insertion.');
         }
-    }
 
-    // Insert actors associations
-    if (actors && Array.isArray(actors)) {
-        for (const actorId of actors) {
-            await db.addMovieActor(movieID.id, actorId);
+        // Insert genres associations
+        if (genre && Array.isArray(genre)) {
+            for (const genreId of genre) {
+                await db.addMovieGenre(movieID.id, genreId);
+            }
         }
-    }
 
-    // Insert directors associations
-    if (directors && Array.isArray(directors)) {
-        for (const directorId of directors) {
-            await db.addMovieDirector(movieID.id, directorId);
+        // Insert actors associations
+        if (actors && Array.isArray(actors)) {
+            for (const actorId of actors) {
+                await db.addMovieActor(movieID.id, actorId);
+            }
         }
-    }
 
-    res.redirect("/movies");
+        // Insert directors associations
+        if (directors && Array.isArray(directors)) {
+            for (const directorId of directors) {
+                await db.addMovieDirector(movieID.id, directorId);
+            }
+        }
+
+        res.redirect("/movies");
+    } catch (error) {
+        console.error('createMovie - error:', error);
+        next(error); // Pass the error to the error handling middleware
+    }
 };
-
 
 exports.updateMovieGet = async(req, res, next) => {
     const movie = await db.getMovieById(req.params.id);

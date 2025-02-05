@@ -10,7 +10,7 @@ cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
-    timeout: 120000 // Set timeout to 60 seconds (60000 milliseconds)
+    timeout: 120000 // Set timeout to 120 seconds (120000 milliseconds)
 });
 
 // Set storage engine to Cloudinary
@@ -26,7 +26,6 @@ const storage = new CloudinaryStorage({
         };
     }
 });
-
 
 // Initialize upload
 const upload = multer({
@@ -67,7 +66,6 @@ function uploadMiddleware(req, res, next) {
         console.log("File uploaded successfully:", req.file);
         next();
     });
-    
 }
 
 module.exports = uploadMiddleware;
