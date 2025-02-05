@@ -178,7 +178,7 @@ exports.updateActorPost = async(req, res) => {
         if (req.file) {
             // Delete the old photo if a new one is uploaded
             if (actor.photo_url) {
-                const parts = movie.photo_url.split('/');
+                const parts = actor.photo_url.split('/');
                 const filename = parts.pop().split('.')[0]; 
                 const folder = parts.includes("uploads") ? "uploads/" : ""; 
                 const oldPublicId = folder + filename;
@@ -201,7 +201,7 @@ exports.updateActorPost = async(req, res) => {
 exports.deleteActor = async (req,res, next) => {
     const actor = await db.getActorById(req.params.id);
     if (actor.photo_url) {
-        const parts = movie.photo_url.split('/');
+        const parts = actor.photo_url.split('/');
         const filename = parts.pop().split('.')[0]; // Extracts "photo-123456"
         const folder = parts.includes("uploads") ? "uploads/" : ""; // Checks if "uploads" is in the path
         const publicId = folder + filename;
