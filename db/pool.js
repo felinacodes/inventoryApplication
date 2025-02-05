@@ -19,7 +19,6 @@ const pool = new Pool({
     },
 });
 
-console.log(`from pool: ${process.env.DB_PORT}`);
 
 module.exports = pool;
 

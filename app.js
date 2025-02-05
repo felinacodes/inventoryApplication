@@ -33,6 +33,11 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    req.setTimeout(300000); // 5 minutes
+    next();
+  });
+
 app.get('*', (req, res, next) => {
     const currentUrl = req.originalUrl;
     links.map(link => {
