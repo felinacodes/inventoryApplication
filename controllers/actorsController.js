@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
 const { deleteFile } = require ('../utils/deleteFile');
-
+const cloudinary = require('cloudinary').v2;
 
 const alphaErr = "must only contain letters.";
 const lengthErr = "must be between 1 and 20 characters.";
