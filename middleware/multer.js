@@ -18,7 +18,7 @@ const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: async (req, file) => {
         const sanitizedFilename = file.originalname.replace(/[^a-zA-Z0-9.]/g, '_');
-        const uniqueSuffix = Date.now() + '-' + crypto.randomBytes(4).toString('hex');
+        const uniqueSuffix = sanitizedFilename + Date.now() + '-' + crypto.randomBytes(4).toString('hex');
         return {
             folder: 'uploads',
             format: file.mimetype.split('/')[1],

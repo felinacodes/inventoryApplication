@@ -95,10 +95,15 @@ exports.createActor = async(req, res) => {
 
         if (!errors.isEmpty()) {
             if (req.file) {
-                const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                fs.unlink(photoPath, (err) => {
-                    if (err) {
-                        console.error(`Error deleting file: ${photoPath}`, err);
+                const parts = req.file.path.split('/');
+                const filename = parts.pop().split('.')[0]; 
+                const folder = parts.includes("uploads") ? "uploads/" : ""; 
+                const publicId = folder + filename;
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                    if (error) {
+                        console.error(`Error deleting Cloudinary image: ${publicId}`, error);
+                    } else {
+                        console.log(`Deleted Cloudinary image: ${publicId}`, result);
                     }
                 });
             }
@@ -123,7 +128,8 @@ exports.createActor = async(req, res) => {
                     totalActors,
                 });
         }
-        const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
+        // const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
+        const photoUrl = req.file ? req.file.path : null;
         const { f_name, l_name, gender, birth_date, death_date } = req.body;
         await db.addActor(
             f_name || null,
@@ -151,11 +157,16 @@ exports.updateActorPost = async(req, res) => {
         if (!errors.isEmpty()) {
              // Delete the uploaded photo if there are validation errors
             if (req.file) {
-                const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                fs.unlink(photoPath, (err) => {
-                    if (err) {
-                        console.error(`Error deleting file: ${photoPath}`, err);
-                    }
+                const parts = req.file.path.split('/');
+                const filename = parts.pop().split('.')[0]; 
+                const folder = parts.includes("uploads") ? "uploads/" : ""; 
+                const publicId = folder + filename;
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                if (error) {
+                    console.error(`Error deleting Cloudinary image: ${publicId}`, error);
+                } else {
+                    console.log(`Deleted Cloudinary image: ${publicId}`);
+                }
                 });
             }
             return res.status(400).render("updateActor", {
@@ -163,13 +174,24 @@ exports.updateActorPost = async(req, res) => {
                 errors: errors.array()
             });
         }
-        let photoUrl = actor.photo_url;
+         let photoUrl = actor.photo_url;
         if (req.file) {
             // Delete the old photo if a new one is uploaded
             if (actor.photo_url) {
-                deleteFile(actor.photo_url);
+                const parts = movie.photo_url.split('/');
+                const filename = parts.pop().split('.')[0]; 
+                const folder = parts.includes("uploads") ? "uploads/" : ""; 
+                const oldPublicId = folder + filename;
+                cloudinary.uploader.destroy(oldPublicId, (error, result) => {
+                    if (error) {
+                        console.error(`Error deleting old Cloudinary image: ${oldPublicId}`, error);
+                    } else {
+                        console.log(`Deleted old Cloudinary image: ${oldPublicId}`);
+                    }
+                }); 
             }
-           photoUrl = `/public/uploads/${req.file.filename}`;
+        //    photoUrl = `/public/uploads/${req.file.filename}`;
+            photoUrl = req.file ? req.file.path : null;
         }
         const { f_name, l_name, gender, birth_date, death_date} = req.body;
         await db.updateActor(req.params.id, f_name, l_name, gender, birth_date ? birth_date : null, death_date ? death_date : null, photoUrl);
@@ -179,7 +201,20 @@ exports.updateActorPost = async(req, res) => {
 exports.deleteActor = async (req,res, next) => {
     const actor = await db.getActorById(req.params.id);
     if (actor.photo_url) {
-        deleteFile(actor.photo_url);
+        const parts = movie.photo_url.split('/');
+        const filename = parts.pop().split('.')[0]; // Extracts "photo-123456"
+        const folder = parts.includes("uploads") ? "uploads/" : ""; // Checks if "uploads" is in the path
+        const publicId = folder + filename;
+
+        console.log(`Public ID to delete: ${publicId}`);
+
+        cloudinary.uploader.destroy(publicId, (error, result) => {
+        if (error) {
+            console.error(`Error deleting Cloudinary image: ${publicId}`, error);
+        } else {
+            console.log(`Deleted Cloudinary image: ${publicId}`, result);
+        }
+    });
     }
     const associatedMovies = await db.getAllMoviesByActor(req.params.id);
     if (associatedMovies.length > 0) {

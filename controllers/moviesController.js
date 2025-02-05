@@ -201,7 +201,6 @@ exports.updateMoviePost = async(req,res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {        
              if (req.file) {
-                console.log('here');
                 const parts = req.file.path.split('/');
                 const filename = parts.pop().split('.')[0]; 
                 const folder = parts.includes("uploads") ? "uploads/" : ""; 
@@ -230,33 +229,29 @@ exports.updateMoviePost = async(req,res) => {
                     errors: errors.array()
                 });
         }
-        // let photoUrl = movie.photo_url;
-        // if (req.file) {
-        //     deleteFile(photoUrl);
-        //     photoUrl = `/public/uploads/${req.file.filename}`;
-        // }
+             let photoUrl = movie.photo_url;
             if (req.file) {
-                // Delete the old image from Cloudinary
-                // console.log(movie.photoUrl);
-                const parts = movie.photo_url.split('/');
-                const filename = parts.pop().split('.')[0]; 
-                const folder = parts.includes("uploads") ? "uploads/" : ""; 
-                const oldPublicId = folder + filename;
-                cloudinary.uploader.destroy(oldPublicId, (error, result) => {
-                    if (error) {
-                        console.error(`Error deleting old Cloudinary image: ${oldPublicId}`, error);
-                    } else {
-                        console.log(`Deleted old Cloudinary image: ${oldPublicId}`);
-                    }
-                });
+                if (movie.photo_url) {
+                    const parts = movie.photo_url.split('/');
+                    const filename = parts.pop().split('.')[0]; 
+                    const folder = parts.includes("uploads") ? "uploads/" : ""; 
+                    const oldPublicId = folder + filename;
+                    cloudinary.uploader.destroy(oldPublicId, (error, result) => {
+                        if (error) {
+                            console.error(`Error deleting old Cloudinary image: ${oldPublicId}`, error);
+                        } else {
+                            console.log(`Deleted old Cloudinary image: ${oldPublicId}`);
+                        }
+                    });   
+                }
 
                 // Update the photo URL with the new Cloudinary URL
                 // movie.photo_url = req.file.path; // Use the Cloudinary URL
-                movie.photo_url = req.file ? req.file.path : null;
+                photoUrl = req.file ? req.file.path : null;
         }
             
         const { title, year, description, genre, actors, directors } = req.body;
-        await db.updateMovie(req.params.id, title, year, description, movie.photo_url);
+        await db.updateMovie(req.params.id, title, year, description, photoUrl);
 
          if (!movie) {
             throw new Error('Failed to retrieve movie ID after insertion.');
@@ -292,7 +287,7 @@ exports.deleteMovie = async(req, res, next) => {
     const movie = await db.getMovieById(req.params.id);
     if (movie.photo_url) {
         // deleteFile(movie.photo_url);
-        const parts = movie.photo_url.split('/');
+            const parts = movie.photo_url.split('/');
             const filename = parts.pop().split('.')[0]; // Extracts "photo-123456"
             const folder = parts.includes("uploads") ? "uploads/" : ""; // Checks if "uploads" is in the path
             const publicId = folder + filename;
