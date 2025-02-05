@@ -240,7 +240,7 @@ exports.updateMoviePost = async(req,res) => {
             if (req.file) {
                 // Delete the old image from Cloudinary
                 console.log(movie.photoUrl);
-                const parts = movie.photoUrl.split('/');
+                const parts = movie.photo_url.split('/');
                 const filename = parts.pop().split('.')[0]; 
                 const folder = parts.includes("uploads") ? "uploads/" : ""; 
                 const oldPublicId = folder + filename;
