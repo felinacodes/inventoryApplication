@@ -194,8 +194,6 @@ exports.updateMovieGet = async(req, res, next) => {
 };
 
 exports.updateMoviePost = async(req,res) => {
-        console.log(`from movie update post`);
-        console.log(`log is ${req.file}`);
         const movie = await db.getMovieById(req.params.id);
         const MovieGenres = await db.getMovieGenres(req.params.id);
         const MovieDirectors = await db.getMovieDirectors(req.params.id);
@@ -239,7 +237,7 @@ exports.updateMoviePost = async(req,res) => {
         // }
             if (req.file) {
                 // Delete the old image from Cloudinary
-                console.log(movie.photoUrl);
+                // console.log(movie.photoUrl);
                 const parts = movie.photo_url.split('/');
                 const filename = parts.pop().split('.')[0]; 
                 const folder = parts.includes("uploads") ? "uploads/" : ""; 
@@ -258,7 +256,7 @@ exports.updateMoviePost = async(req,res) => {
         }
             
         const { title, year, description, genre, actors, directors } = req.body;
-        await db.updateMovie(req.params.id, title, year, description, photoUrl);
+        await db.updateMovie(req.params.id, title, year, description, movie.photo_url);
 
          if (!movie) {
             throw new Error('Failed to retrieve movie ID after insertion.');
