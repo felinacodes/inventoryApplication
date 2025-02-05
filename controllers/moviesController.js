@@ -291,8 +291,13 @@ exports.deleteMovie = async(req, res, next) => {
     const movie = await db.getMovieById(req.params.id);
     if (movie.photo_url) {
         // deleteFile(movie.photo_url);
-        const publicId = movie.photo_url.split('/').pop().split('.')[0];
-        console.log(`Public ID to delete: ${publicId}`);
+        const parts = movie.photo_url.split('/');
+            const filename = parts.pop().split('.')[0]; // Extracts "photo-123456"
+            const folder = parts.includes("uploads") ? "uploads/" : ""; // Checks if "uploads" is in the path
+            const publicId = folder + filename;
+
+            console.log(`Public ID to delete: ${publicId}`);
+
         cloudinary.uploader.destroy(publicId, (error, result) => {
             if (error) {
                 console.error(`Error deleting Cloudinary image: ${publicId}`, error);
