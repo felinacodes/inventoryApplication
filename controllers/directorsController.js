@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const { handleDatabaseError, checkDataExistence } = require('../utils/errorHandler');
 const { deleteFile } = require("../utils/deleteFile");
+const cloudinary = require('cloudinary').v2;
 
 const alphaErr = "must only contain letters.";
 const lengthErr = "must be between 1 and 20 characters.";
@@ -88,11 +89,16 @@ exports.createDirector = async(req, res) => {
          const totalDirectors = await db.getDirectorsCount(req.body.filter);
         if (!errors.isEmpty()) {
             if (req.file) {
-                           const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                           fs.unlink(photoPath, (err) => {
-                               if (err) {
-                                   console.error(`Error deleting file: ${photoPath}`, err);
-                               }
+                const parts = req.file.path.split('/');
+                const filename = parts.pop().split('.')[0]; 
+                const folder = parts.includes("uploads") ? "uploads/" : ""; 
+                const publicId = folder + filename;
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                    if (error) {
+                        console.error(`Error deleting Cloudinary image: ${publicId}`, error);
+                    } else {
+                        console.log(`Deleted Cloudinary image: ${publicId}`, result);
+                    }
                            });
                        }
             const directors = await db.getAllDirectors();
@@ -116,7 +122,8 @@ exports.createDirector = async(req, res) => {
                     totalDirectors,
                 });
         }
-        const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
+        // const photoUrl = req.file ? `/public/uploads/${req.file.filename}` : null;
+        const photoUrl = req.file ? req.file.path : null;
         const { f_name, l_name, gender, birth_date, death_date} = req.body;
         await db.addDirector(
             f_name || null,
@@ -140,12 +147,17 @@ exports.updateDirectorPost = async(req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
              if (req.file) {
-                            const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                            fs.unlink(photoPath, (err) => {
-                                if (err) {
-                                    console.error(`Error deleting file: ${photoPath}`, err);
-                                }
-                            });
+                const parts = req.file.path.split('/');
+                const filename = parts.pop().split('.')[0]; 
+                const folder = parts.includes("uploads") ? "uploads/" : ""; 
+                const publicId = folder + filename;
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                if (error) {
+                    console.error(`Error deleting Cloudinary image: ${publicId}`, error);
+                } else {
+                    console.log(`Deleted Cloudinary image: ${publicId}`);
+                }
+                });
                         }
             return res.status(400).render("updateDirector", {
                 director: director,
@@ -156,9 +168,20 @@ exports.updateDirectorPost = async(req, res) => {
         if (req.file) {
             // Delete the old photo if a new one is uploaded
             if (director.photo_url) {
-                deleteFile(director.photo_url);
+                const parts = director.photo_url.split('/');
+                const filename = parts.pop().split('.')[0]; 
+                const folder = parts.includes("uploads") ? "uploads/" : ""; 
+                const oldPublicId = folder + filename;
+                cloudinary.uploader.destroy(oldPublicId, (error, result) => {
+                    if (error) {
+                        console.error(`Error deleting old Cloudinary image: ${oldPublicId}`, error);
+                    } else {
+                        console.log(`Deleted old Cloudinary image: ${oldPublicId}`);
+                    }
+                }); 
             }
-           photoUrl = `/public/uploads/${req.file.filename}`;
+        //    photoUrl = `/public/uploads/${req.file.filename}`;
+              photoUrl = req.file ? req.file.path : null;
         }
         const { f_name, l_name, gender, birth_date, death_date} = req.body;
 
@@ -170,7 +193,20 @@ exports.deleteDirector = async (req,res, next) => {
     const director = await db.getDirectorById(req.params.id);
     checkDataExistence(director, next);
     if (director.photo_url) {
-        deleteFile(director.photo_url);
+        const parts = director.photo_url.split('/');
+        const filename = parts.pop().split('.')[0]; // Extracts "photo-123456"
+        const folder = parts.includes("uploads") ? "uploads/" : ""; // Checks if "uploads" is in the path
+        const publicId = folder + filename;
+
+        console.log(`Public ID to delete: ${publicId}`);
+
+        cloudinary.uploader.destroy(publicId, (error, result) => {
+        if (error) {
+            console.error(`Error deleting Cloudinary image: ${publicId}`, error);
+        } else {
+            console.log(`Deleted Cloudinary image: ${publicId}`, result);
+        }
+    });
     }
     const associatedMovies = await db.getAllMoviesByDirector(req.params.id);
     if (associatedMovies.length >0) {
