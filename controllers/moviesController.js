@@ -90,7 +90,10 @@ exports.createMovie = async (req, res, next) => {
 
         if (!errors.isEmpty()) {
             if (req.file) {
-                const publicId = req.file.public_id;
+                const parts = movie.photo_url.split('/');
+                const filename = parts.pop().split('.')[0]; 
+                const folder = parts.includes("uploads") ? "uploads/" : ""; 
+                const publicId = folder + filename;
                 cloudinary.uploader.destroy(publicId, (error, result) => {
                     if (error) {
                         console.error(`Error deleting Cloudinary image: ${publicId}`, error);
@@ -198,25 +201,21 @@ exports.updateMoviePost = async(req,res) => {
         const MovieDirectors = await db.getMovieDirectors(req.params.id);
         const MovieActors = await db.getMovieActors(req.params.id);
         const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            
+        if (!errors.isEmpty()) {        
              if (req.file) {
-                            // const photoPath = path.join(__dirname, '..', 'public', 'uploads', req.file.filename);
-                            // fs.unlink(photoPath, (err) => {
-                            //     if (err) {
-                            //         console.error(`Error deleting file: ${photoPath}`, err);
-                            //     }
-                            // });
-                            console.log('here');
-                            const publicId = req.file.public_id;
-                            cloudinary.uploader.destroy(publicId, (error, result) => {
-                            if (error) {
-                                console.error(`Error deleting Cloudinary image: ${publicId}`, error);
-                            } else {
-                                console.log(`Deleted Cloudinary image: ${publicId}`);
-                            }
-                        });
-                        }
+                console.log('here');
+                const parts = movie.photo_url.split('/');
+                const filename = parts.pop().split('.')[0]; 
+                const folder = parts.includes("uploads") ? "uploads/" : ""; 
+                const publicId = folder + filename;
+                cloudinary.uploader.destroy(publicId, (error, result) => {
+                if (error) {
+                    console.error(`Error deleting Cloudinary image: ${publicId}`, error);
+                } else {
+                    console.log(`Deleted Cloudinary image: ${publicId}`);
+                }
+            });
+            }
 
             const genres = await db.getAllCategories();
             const directors = await db.getAllDirectors();
@@ -241,7 +240,10 @@ exports.updateMoviePost = async(req,res) => {
             if (req.file) {
                 // Delete the old image from Cloudinary
                 console.log(movie.photoUrl);
-                const oldPublicId = movie.photoUrl.split('/').pop().split('.')[0];
+                const parts = movie.photoUrl.split('/');
+                const filename = parts.pop().split('.')[0]; 
+                const folder = parts.includes("uploads") ? "uploads/" : ""; 
+                const oldPublicId = folder + filename;
                 cloudinary.uploader.destroy(oldPublicId, (error, result) => {
                     if (error) {
                         console.error(`Error deleting old Cloudinary image: ${oldPublicId}`, error);
@@ -251,7 +253,8 @@ exports.updateMoviePost = async(req,res) => {
                 });
 
                 // Update the photo URL with the new Cloudinary URL
-                movie.photo_url = req.file.path; // Use the Cloudinary URL
+                // movie.photo_url = req.file.path; // Use the Cloudinary URL
+                movie.photo_url = req.file ? req.file.path : null;
         }
             
         const { title, year, description, genre, actors, directors } = req.body;

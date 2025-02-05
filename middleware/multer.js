@@ -54,7 +54,6 @@ function checkFileType(file, cb) {
 
 // Middleware to handle multer errors
 function uploadMiddleware(req, res, next) {
-    console.log(`from multer edited`);
     upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
             console.error("Multer error:", err);
