@@ -90,7 +90,7 @@ exports.createMovie = async (req, res, next) => {
 
         if (!errors.isEmpty()) {
             if (req.file) {
-                const parts = movie.photo_url.split('/');
+                const parts = req.file.path.split('/');
                 const filename = parts.pop().split('.')[0]; 
                 const folder = parts.includes("uploads") ? "uploads/" : ""; 
                 const publicId = folder + filename;
@@ -204,7 +204,7 @@ exports.updateMoviePost = async(req,res) => {
         if (!errors.isEmpty()) {        
              if (req.file) {
                 console.log('here');
-                const parts = movie.photo_url.split('/');
+                const parts = req.file.path.split('/');
                 const filename = parts.pop().split('.')[0]; 
                 const folder = parts.includes("uploads") ? "uploads/" : ""; 
                 const publicId = folder + filename;
