@@ -87,7 +87,6 @@ exports.createMovie = async (req, res, next) => {
         const page = parseInt(req.query.page) || 1;
         const pageSize = parseInt(req.query.pageSize) || 12;
         const totalMovies = await db.getMoviescount(req.body.filter);
-        console.log('createMovie - pageSize:', pageSize);
 
         if (!errors.isEmpty()) {
             if (req.file) {
@@ -96,7 +95,7 @@ exports.createMovie = async (req, res, next) => {
                     if (error) {
                         console.error(`Error deleting Cloudinary image: ${publicId}`, error);
                     } else {
-                        console.log(`Deleted Cloudinary image: ${publicId}`);
+                        console.log(`Deleted Cloudinary image: ${publicId}`, result);
                     }
                 });
             }
@@ -293,11 +292,12 @@ exports.deleteMovie = async(req, res, next) => {
     if (movie.photo_url) {
         // deleteFile(movie.photo_url);
         const publicId = movie.photo_url.split('/').pop().split('.')[0];
+        console.log(`Public ID to delete: ${publicId}`);
         cloudinary.uploader.destroy(publicId, (error, result) => {
             if (error) {
-                console.error(`Error deleting old Cloudinary image: ${publicId}`, error);
+                console.error(`Error deleting Cloudinary image: ${publicId}`, error);
             } else {
-                console.log(`Deleted old Cloudinary image: ${publicId}`);
+                console.log(`Deleted Cloudinary image: ${publicId}`, result);
             }
         });
     }
