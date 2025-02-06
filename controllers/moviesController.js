@@ -130,11 +130,23 @@ exports.createMovie = async (req, res, next) => {
         }
 
         const photoUrl = req.file ? req.file.path : null;
-        const { title, year, description, genre, actors, directors } = req.body;
+        const safeDescription = req.body.description
+        .replace(/\n/g, '<br>')  // Converts newlines to <br> tags
+        .replace(/ /g, '&nbsp;') // Converts spaces to &nbsp;
+        .replace(/&/g, '&amp;')  // Converts & to &amp;
+        .replace(/</g, '&lt;')   // Converts < to &lt;
+        .replace(/>/g, '&gt;')   // Converts > to &gt;
+        .replace(/"/g, '&quot;') // Converts " to &quot;
+        .replace(/'/g, '&#39;')  // Converts ' to &#39;
+        .replace(/`/g, '&#96;'); // Converts ` to &#96;
+
+// Send to the template
+res.render('your-template', { safeDescription });
+        const { title, year, genre, actors, directors } = req.body;
         const movieID = await db.addMovie(
             title || null,
             year || null,
-            description || null,
+            safeDescription || null,
             photoUrl
         );
 

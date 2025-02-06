@@ -19,7 +19,7 @@
         <img src="<%= movie.photo_url ? movie.photo_url : '/public/images/default.jpg' %>" alt="movie poster" 
         class="w-full max-h-90 object-cover rounded-md mb-4">
     </div>
-    <h6 class="font-serif m-2  break-words hyphens-auto lg:max-w-[50%] first-letter:font-bold dark:text-white"> <%= movie.description ? movie.description : "No Description available"  %></h6>
+    <h6 class="font-serif m-2  break-words hyphens-auto lg:max-w-[50%] first-letter:font-bold dark:text-white"> <%- movie.description ? movie.description : "No Description available"  %></h6>
     <div class=" dark:text-white m-2 flex flex-col">
         <div class="flex gap-2 items-center flex-col lg:flex-row">
             <h6 class="text-lg font-semibold font-serif"> Genres:</h6>
