@@ -140,8 +140,6 @@ exports.createMovie = async (req, res, next) => {
         .replace(/'/g, '&#39;')  // Converts ' to &#39;
         .replace(/`/g, '&#96;'); // Converts ` to &#96;
 
-// Send to the template
-res.render('your-template', { safeDescription });
         const { title, year, genre, actors, directors } = req.body;
         const movieID = await db.addMovie(
             title || null,
