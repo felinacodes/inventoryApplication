@@ -8,15 +8,8 @@ require('dotenv').config();
 
 
 const pool = new Pool({
-    host: process.env.HOST,
-    user: process.env.USER,
-    database: process.env.DATABASE,
-    password: process.env.PASSWORD,
-    port: process.env.DB_PORT || 5432,
-    app_port: process.env.APP_PORT,
-    ssl: {
-        rejectUnauthorized: false
-    },
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
 });
 
 

@@ -1,7 +1,6 @@
 const { Client } = require('pg');
-require('dotenv').config();
-console.log(process.env.DATABASE);
-const path = require("path");
+require('dotenv').config({ path: '../.env'});
+// const path = require("path");
 // require('dotenv').config({
 //     path: `.env.${process.env.NODE_ENV || 'development'}`
 // });
@@ -323,24 +322,15 @@ VALUES
 
 async function main() {
     console.log("seeding...");
-    console.log(process.env.HOST);
-    console.log(process.env.USER);
-    console.log(process.env.DATABASE);
-    console.log(process.env.PASSWORD);
-    console.log(process.env.PORT);
+    console.log('DATABASE_URL:', process.env.DATABASE_URL);
 
-    const client = new Client({
-      host: process.env.HOST,
-    //   user: process.env.USER,
-      user: 'postgres',
-      database: process.env.DATABASE,
-      password: process.env.PASSWORD,
-      port: process.env.PORT,
-      ssl: {
-        rejectUnauthorized: false,
-      }, 
+
+   const client = new Client({
+     connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
     });
-  
+
+
     try {
       await client.connect();
       await client.query(SQL);
