@@ -1,3 +1,6 @@
+#Live Link
+https://inventoryapplication-ejfd.onrender.com/
+
 # inventoryApplication 
 ![Capture1](https://github.com/user-attachments/assets/6c2a2fa9-58b7-4db8-9095-6573d52fb03d)
 ![Capture2](https://github.com/user-attachments/assets/7b493115-be3b-434b-8fa8-1cfc9fd975d4)
